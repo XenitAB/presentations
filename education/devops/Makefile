@@ -1,4 +1,0 @@
-server:
-	marp -s .
-
-generate:
