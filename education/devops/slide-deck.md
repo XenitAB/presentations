@@ -189,7 +189,7 @@ Mer information...
 
 ---
 
-# Key success factors
+# Framgångsfaktorer 1
 
 - Använd versionshantering för allt
 - Automatisera deployment och tester
@@ -205,15 +205,40 @@ Mer information...
 
 ---
 
-# Key success factors
+# Framgångsfaktorer 2
+
+- Samla in och implemenmtera feedback från kunder
+- Synliggör flödet av arbete genom värdeströmmen
+- Arbeta i små intervall (batches)
+- Främja och möjliggör experiment
+
+<!--
+Mer information...
+-->
+
+---
+
+# Framgångsfaktorer 3
 
 - Enkel change management
-- Automatisera deployment och tester
-- Implementera continuous integration / continuous delivery
-- Använd trunk-based development-metoder
-- Injecera säkerhet i alla steg
-- Löst kopplad arkitektur
-- Arkitektur för att möjliggöra autonoma team
+- Använd data från övervakning för att ta beslut
+- Arbeta proaktivt med att upprätthålla hälsan på systemen
+- Jobba med WIP (work-in-process) begränsningar
+- Visualisera hur arbete utförs
+
+<!--
+Mer information...
+-->
+
+---
+
+# Framgångsfaktorer 4
+
+- Främjar kulturen:
+  - Informationsflöden genom organisationen
+  - Samarbete och tillit
+  - Korsfunktionella team
+- Investera i att alla lär sig och utvecklas
 
 <!--
 Mer information...
@@ -312,8 +337,10 @@ Presenter notes.
 
 - Books
 
-  - The Phoenix Project
-  - The Unicorn Project
+  - [The Phoenix Project](https://www.goodreads.com/book/show/17255186-the-phoenix-project)
+  - [The Unicorn Project](https://www.goodreads.com/book/show/44333183-the-unicorn-project)
+  - [The Goal](https://www.goodreads.com/book/show/113934.The_Goal)
+  - [Accelerate](https://www.goodreads.com/book/show/35747076-accelerate)
 
 - Websites
 
