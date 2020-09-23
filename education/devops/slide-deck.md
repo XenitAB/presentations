@@ -248,76 +248,67 @@ Mer information...
 
 # Wall of Confusion
 
-![bg left](./assets/wall-of-confusion.png)
+![bg](./assets/wall-of-confusion.png)
 
 <!--
 Presenter notes.
+- There is more to it than just the app
+  - We have dependencies, os, etc.
+- How do we avoid throwing the app over the wall?
+- What tools are there that we can use
 -->
 
 ---
 
-# The Big Switch
+# Mjukvara
 
-![bg right](./assets/switch.jpg)
-
-<!--
-Presenter notes.
--->
-
----
-
-# Stability vs Adaptability
-
-There has to be a better way
-
-<!--
-Presenter notes.
--->
-
----
-
-# How
-
-DevOps is an idea not a thing
-
-- Requires investment from all stakeholders
-- Is built around communication
-
-<!--
-Presenter notes.
--->
-
----
-
-# What
-
-Software as a communication tool
-
-- Tools can reduce the amount of human communication
-- Reduces can reduce risk of things going wrong
-
-<!--
-Presenter notes.
--->
-
----
-
-# Way of working
-
-A good deciesion is one that can be reversed
-
-- Separation of responsibilities
-- Lose coupling between components
-
-<!--
-Presenter notes.
--->
+- Svårt att jobba med DevOps om din produkt är trubbig
+- Låt kulturen påverka hur du designar mjukvara
+- Värt att tänka på:
+  - Separation av ansvar
+  - Kofiguration vs Logik
+  - Hur mycket "vet" din applikation?
 
 ---
 
 # Docker
 
-Tool which allows you to bind code, dependencies and OS into a single small and efficient binary.
+![bg w:60%](./assets/docker-vs-vm.png)
+
+<!--
+Presenter notes.
+
+- Docker is a tool that simplifies working with Linux containers.
+- A container is an efficient way to snapshot code, dependencies and OS into a single binary.
+-->
+
+---
+
+# Exempel
+
+```Dockerfile
+FROM node:slim
+RUN mkdir /app
+WORKDIR /app
+COPY . .
+CMD [ "node", "main.js" ]
+```
+
+```shell
+docker build --tag webapp .
+docker run webapp
+```
+
+<!--
+Presenter notes.
+
+- Snapshots allows for an image to always work.
+- Configuration should be kept separate.
+-->
+
+---
+
+# Flera Applikationer
 
 <!--
 Presenter notes.
@@ -325,7 +316,7 @@ Presenter notes.
 
 ---
 
-# Demo
+# Kubernetes
 
 <!--
 Presenter notes.
@@ -333,7 +324,7 @@ Presenter notes.
 
 ---
 
-# References
+# Resurser
 
 - Books
 
