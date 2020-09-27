@@ -252,7 +252,12 @@ Mer information...
 
 # Wall of Confusion
 
-![bg](./assets/wall-of-confusion.png)
+- Motsatsen till DevOps
+- Dev utvecklar på lokala maskiner utan att veta vart de ska köra
+- Ops kör applikationer utan att veta vilka beroende de har
+- Ingen är glad
+
+![bg left](./assets/wall-of-confusion.png)
 
 <!--
 Presenter notes.
@@ -264,14 +269,38 @@ Presenter notes.
 
 ---
 
-# Mjukvara
+# Hur undviker jag fällan?
 
-- Svårt att jobba med DevOps om din produkt är trubbig
-- Låt kulturen påverka hur du designar mjukvara
-- Värt att tänka på:
+- Låt DevOps påverkar din mjukvaru arkitektur
+- Arkitektur är en förlängning av mjukvaru design
+- Svårt att jobba med DevOps om din produkt är complex
+- Värt att fokusera på:
   - Separation av ansvar
-  - Kofiguration vs Logik
+  - Konfiguration vs Logik
   - Hur mycket "vet" din applikation?
+
+---
+
+# Kundcase
+
+- Kunden FooBar har idag en existerande produkt
+  - Två komponenter, frontend och backend
+  - Den bygger helt på nodejs
+- Det finns ett ops och två dev team
+- Det finns en produktions miljö som kör inne i FooBars kontor
+  - Koden laddas upp till filserver för att gå i produktion
+  - Ops teamet tar sen och flyttar över koden till rätt maskin
+
+<!--
+Presenter notes.
+- Vi använder kund caset för att utforska vilka verktyg vi kan använda
+-->
+
+---
+
+<!-- _paginate: false -->
+
+![bg](./assets/unsplash/questionmark.jpg)
 
 ---
 
