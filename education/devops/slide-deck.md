@@ -8,6 +8,10 @@ backgroundColor: #fff
 backgroundImage: url('./assets/xenit/background_white.jpg')
 footer: "![width:50px height:50px](./assets/xenit/logo_green.jpg)"
 style: |
+  @font-face {
+    font-family: Lucida Sans;
+    src: url(./assets/lucida-sans-unicode-regular.ttf);
+  }
   section {
     font-family: 'Lucida Sans';
   }
