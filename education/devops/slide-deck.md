@@ -269,14 +269,49 @@ Presenter notes.
 
 ---
 
-# Hur undviker jag fällan?
+# Hur jobbar företag?
+
+- Finns ett fåtal "Big Picture" personer
+- Det finns en rödtråd som alla delar
+- Arkitektur är flexibel och inte en 5 års plan
+- Utvecklare ska få göra så mycket som möjligt
+  - Build, test, run, debug
+- Värde levereras ofta
+
+<!--
+Presenter notes.
+
+-->
+
+---
+
+# Bra eller dålig?
+
+
+<!--
+Presenter notes.
+- Is this architecture good?
+-->
+
+---
+
+# Bra eller dålig?
+
+
+<!--
+Presenter notes.
+- Is this architecture good?
+-->
+
+---
+
+# Utvecklarens mantra
 
 - Låt DevOps påverkar din mjukvaru arkitektur
 - Arkitektur är en förlängning av mjukvaru design
-- Svårt att jobba med DevOps om din produkt är complex
 - Värt att fokusera på:
-  - Separation av ansvar
-  - Konfiguration vs Logik
+  - Separation av ansvar mellan applikationer
+  - Är det konfiguration eller logik
   - Hur mycket "vet" din applikation?
 
 ---
