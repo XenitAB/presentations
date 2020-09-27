@@ -293,14 +293,17 @@ Presenter notes.
 
 <!--
 Presenter notes.
-- Vi använder kund caset för att utforska vilka verktyg vi kan använda
+- Use the customer case to show what tooling is available to us.
 -->
 
 ---
 
-<!-- _paginate: false -->
-
 ![bg](./assets/unsplash/questionmark.jpg)
+
+<!--
+Presenter notes.
+- Take a look at the legacy directory
+-->
 
 ---
 
@@ -321,9 +324,11 @@ Presenter notes.
 
 ```Dockerfile
 FROM node:slim
-RUN mkdir /app
-WORKDIR /app
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
 COPY . .
+ENV IFACE="0.0.0.0"
 CMD [ "node", "main.js" ]
 ```
 
@@ -335,13 +340,14 @@ docker run webapp
 <!--
 Presenter notes.
 
+- Removes need to understand development infra.
 - Snapshots allows for an image to always work.
 - Configuration should be kept separate.
 -->
 
 ---
 
-# Flera Applikationer
+# CI
 
 <!--
 Presenter notes.
@@ -351,6 +357,9 @@ Presenter notes.
 
 # Kubernetes
 
+- Lösning för att köra Docker container "at scale"
+- En lösning för produkter med flera team
+
 <!--
 Presenter notes.
 -->
@@ -358,19 +367,30 @@ Presenter notes.
 ---
 
 # Resurser
-
 - Books
-
   - [The Phoenix Project](https://www.goodreads.com/book/show/17255186-the-phoenix-project)
   - [The Unicorn Project](https://www.goodreads.com/book/show/44333183-the-unicorn-project)
   - [The Goal](https://www.goodreads.com/book/show/113934.The_Goal)
   - [Accelerate](https://www.goodreads.com/book/show/35747076-accelerate)
 
-- Websites
-
 - Podcasts
+  - [Kubernetes Podcast](https://kubernetespodcast.com/)
+  - [The New Stack Makers](https://thenewstack.io/podcasts/makers/)
+  - [The Cloudcast](https://www.thecloudcast.net/)
 
-- Tools
+<!--
+Presenter notes.
+-->
+
+---
+
+- Links
+  - [Docker](https://www.docker.com/)
+  - [Kubernetes](https://kubernetes.io/)
+  - [CNCF](https://www.cncf.io/)
+  - [Kind](https://github.com/kubernetes-sigs/kind)
+  - [Kubernetes Slack](https://slack.k8s.io/) (#se-users)
+  - [Cloud Native GBG](https://www.meetup.com/TheCloudNativeGbg/)
 
 <!--
 Presenter notes.
