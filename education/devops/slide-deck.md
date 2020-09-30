@@ -370,8 +370,8 @@ Främja och möjliggör experiment
 # Wall of Confusion
 
 - Motsatsen till DevOps
-- Dev utvecklar på lokala maskiner utan att veta vart de ska köra
-- Ops kör applikationer utan att veta vilka beroende de har
+- Dev utvecklar på lokala maskiner som är alla unika
+- Ops kör applikationer utan att veta något om den
 - Ingen är glad
 
 ![bg left](./assets/wall-of-confusion.png)
@@ -386,14 +386,14 @@ Presenter notes.
 
 ---
 
-# Hur jobbar företag?
+# Hur jobbar bra företag?
 
-- Finns ett fåtal "Big Picture" personer
-- Det finns en rödtråd som alla delar
-- Arkitektur är flexibel och inte en 5 års plan
-- Utvecklare ska få göra så mycket som möjligt
-  - Build, test, run, debug
+- Gemensam delad vision
+- Arkitektur som är flexibel
 - Värde levereras ofta
+- Avbetalnigns plan för tekniskskuld
+- Utvecklare får mycket frihet och ansvar
+  - Build, test, run, debug
 
 <!--
 Presenter notes.
@@ -402,59 +402,50 @@ Presenter notes.
 
 ---
 
-# Bra eller dålig?
+# Kod är inte konst
 
-<!--
-Presenter notes.
-- Is this architecture good?
--->
+:(
 
----
-
-# Bra eller dålig?
-
-<!--
-Presenter notes.
-- Is this architecture good?
--->
+![bg right](./assets/unsplash/ryan-stefan-5K98ScREEUY-unsplash.jpg)
 
 ---
 
 # Utvecklarens mantra
 
-- Låt DevOps påverkar din mjukvaru arkitektur
-- Arkitektur är en förlängning av mjukvaru design
-- Värt att fokusera på:
-  - Separation av ansvar mellan applikationer
+- Låt kulturen påverkar din arkitektur
+- Värt att fråga
+  - Upfyller jag Unix filosofin
   - Är det konfiguration eller logik
   - Hur mycket "vet" din applikation?
+  - Vem påverkas av min ändring?
+
+---
+
+# Bra eller dåligt?
+
+![bg 60%](./assets/uber-micro.png)
+
+<!--
+Presenter notes.
+- Is this architecture good?
+- Dare to try to explain why something is good or bad.
+-->
 
 ---
 
 # Kundcase
 
 - Kunden FooBar har idag en existerande produkt
-  - Två komponenter, frontend och backend
-  - Den bygger helt på nodejs
-- Det finns ett ops och två dev team
-- Det finns en produktions miljö som kör inne i FooBars kontor
+  - Frontend och backend
+  - Byggt på NodeJS
+- Produktions miljö består av två servrar
   - Koden laddas upp till filserver för att gå i produktion
-  - Ops teamet tar sen och flyttar över koden till rätt maskin
+  - Sen flyttar man över koden till båda servrarna
+  - Frontend och backend kör på båda servrarna
 
 <!--
 Presenter notes.
 - Use the customer case to show what tooling is available to us.
--->
-
----
-
-<!-- _footer: "" -->
-
-![bg](./assets/unsplash/questionmark.jpg)
-
-<!--
-Presenter notes.
-- Take a look at the legacy directory
 -->
 
 ---
@@ -501,6 +492,10 @@ Presenter notes.
 
 # CI
 
+Keep it simple stupid
+
+![bg right](./assets/ci.png)
+
 <!--
 Presenter notes.
 -->
@@ -509,11 +504,17 @@ Presenter notes.
 
 # Kubernetes
 
-- Lösning för att köra Docker container "at scale"
-- En lösning för produkter med flera team
+Hela paketet i en lösning
+
+![bg left](./assets/kubernetes.png)
 
 <!--
 Presenter notes.
+
+Network
+Scaling
+Persistence
+Runtime
 -->
 
 ---
