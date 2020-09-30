@@ -313,7 +313,7 @@ Synliggör flödet av arbete genom värdeströmmen
 
 ---
 
-![bg right](./assets/unsplash/lala-azizli-tfNyTfJpKvc-unsplash.jpg)
+![bg right](./assets/unsplash/lenny-kuhne-jHZ70nRk7Ns-unsplash.jpg)
 
 ## One-piece flow
 
@@ -321,52 +321,51 @@ Arbeta i små intervall (batches)
 
 <!--
 - Utför förändringar i så små intervall som möjligt
-- Ta förändringarna till produktion
-- -----------
+- Testa och ta den lilla förändringen till produktion
+- Gör en sak åt gången och ta den hela vägen
+- Kortare time to market, lättare att säga vad som gått fel
 -->
 
 ---
 
-# Framgångsfaktorer 2
+![bg left](./assets/unsplash/chuttersnap-cGXdjyP6-NU-unsplash.jpg)
 
-- Samla in och implementera feedback från kunder
-- Synliggör flödet av arbete genom värdeströmmen
-- Arbeta i små intervall (batches)
-- Främja och möjliggör experiment
+## Fail fast
+
+Främja och möjliggör experiment
 
 <!--
-Mer information...
+- Våga experimentera
+- Bättre misslyckas tidigt än sent
+- Testa koncept och hypoteser så billigt som möjligt
 -->
 
 ---
 
-# Framgångsfaktorer 3
+<!-- _footer: "" -->
+
+![bg](./assets/unsplash/andrew-neel-TTPMpLl_2lc-unsplash.jpg)
+
+# PAUS
+
+---
+
+<!--
+
+# Övriga Framgångsfaktorer
 
 - Enkel change management
 - Använd data från övervakning för att ta beslut
 - Arbeta proaktivt med att upprätthålla hälsan på systemen
 - Jobba med WIP (work-in-process) begränsningar
 - Visualisera hur arbete utförs
-
-<!--
-Mer information...
--->
-
----
-
-# Framgångsfaktorer 4
-
 - Främjar kulturen:
   - Informationsflöden genom organisationen
   - Samarbete och tillit
   - Korsfunktionella team
 - Investera i att alla lär sig och utvecklas
 
-<!--
-Mer information...
 -->
-
----
 
 # Wall of Confusion
 
@@ -449,6 +448,8 @@ Presenter notes.
 
 ---
 
+<!-- _footer: "" -->
+
 ![bg](./assets/unsplash/questionmark.jpg)
 
 <!--
@@ -524,6 +525,7 @@ Presenter notes.
 - [The Goal](https://www.goodreads.com/book/show/113934.The_Goal)
 - [Accelerate](https://www.goodreads.com/book/show/35747076-accelerate)
 - [Making Work Visible](https://www.goodreads.com/book/show/36458712-making-work-visible)
+- [The Pragmatic Programmer](https://www.goodreads.com/book/show/4099.The_Pragmatic_Programmer)
 
 ---
 
