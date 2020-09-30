@@ -174,44 +174,162 @@ Mer information...
 
 ---
 
-# Produktivitet
+![bg left](./assets/unsplash/yancy-min-842ofHC6MaI-unsplash.jpg)
 
-<!-- Måste justeras efter dagens siffror -->
+## Versionshantering
 
-| Företag       | Frekvens  | Ledtid  | Pålitlighet |
-| ------------- | --------- | ------- | ----------- |
-| Amazon        | 23000/dag | Minuter | Hög         |
-| Google        | 5500/dag  | Minuter | Hög         |
-| Netflix       | 500/dag   | Minuter | Hög         |
-| Facebook      | 1/dag     | Timmar  | Hög         |
-| Twitter       | 3/vecka   | Timmar  | Hög         |
-| Vanliga bolag | 1/kvartal | Månader | Låg         |
+Använd versionshantering för allt
 
 <!--
-Mer information...
+- Infrastructure as Code
+- Code review
+- Presentations as Code
+- Documentation as Code
 -->
 
 ---
 
-# Framgångsfaktorer 1
+![bg right](./assets/unsplash/david-leveque-GpNOhig3LSU-unsplash.jpg)
 
-- Använd versionshantering för allt
-- Automatisera deployment och tester
-- Implementera continuous integration / continuous delivery
-- Använd trunk-based development-metoder
-- Injecera säkerhet i alla steg
-- Löst kopplad arkitektur
-- Arkitektur för att möjliggöra autonoma team
+## Automatisering
+
+Automatisera deployment och tester
 
 <!--
-Mer information...
+- Allt du gör kan automatiseras
+- Se till att göra automatisering tillgängligt lokalt
+- Se till att alla tester kan köras hela tiden
+-->
+
+---
+
+![bg left](./assets/unsplash/tian-kuan-9AxFJaNySB8-unsplash.jpg)
+
+## CI / CD
+
+Implementera continuous integration / continuous delivery
+
+<!--
+- Exekvera byggen vid commit
+- Kör tester vid pull request
+- Automatisk deployment till olika environments
+- Tester mot olika environments
+-->
+
+---
+
+![bg right](./assets/unsplash/elizabeth-explores-Hw83Y4mZdfs-unsplash.jpg)
+
+## Trunk based
+
+Använd trunk-based development-metoder
+
+<!--
+- Jobba med små förändringar ("small batches")
+- Motverka merge konflikter
+- Små branches för förändringar
+- Utför merge ofta
+-->
+
+---
+
+![bg left](./assets/unsplash/scott-webb-yekGLpc3vro-unsplash.jpg)
+
+## Säkerhet
+
+Injecera säkerhet i alla steg
+
+<!--
+- Säkerhet är inget man tänker på efteråt
+- Se till att ha med det i tanken på allt som görs
+- Se till att lära dig mer om säkerhet hela tiden
+- Flagga för dem i teamet/bolaget om du är osäker
+- Få in produkter och arbetssätt som ökar säkerhet i alla steg
+- Automatisera så mycket du kan
+-->
+
+---
+
+![bg right](./assets/unsplash/sharon-pittaway-4_hFxTsmaO4-unsplash.jpg)
+
+## Microservices
+
+Löst kopplad arkitektur
+
+<!--
+- Enklare att förändra små tjänster
+- Mindre tester, snabbare byggen, fler releaser
+- Mer agilt, snabbsare time to market
+- Mindre beroenden mellan tjänster
+- Möjlighet att välja rätt språk för rätt tjänst
+-->
+
+---
+
+![bg left](./assets/unsplash/cytonn-photography-GJao3ZTX9gU-unsplash.jpg)
+
+## Autonoma team
+
+Arkitektur för att möjliggöra autonoma team
+
+<!--
+- Exponera kontrakten mellan teamen
+- Testa kontrakten
+- "Cell based architecture"
+- Se till att varje team kan jobba på det sättet som gör dem mest effektiva
+- Skapa good practices och guidelines, men tvinga inte
+- Jobba aktivt med Developer Experience
+-->
+
+---
+
+![bg right](./assets/unsplash/celpax-1Lf5Adh9SCg-unsplash.jpg)
+
+## Feedback
+
+Samla in och implementera feedback från kunder
+
+<!--
+- Se till att få feedback så tidigt som möjligt och så ofta som möjligt
+- Utgå inte från att det du tror är viktigt faktiskt är viktigt för kunden
+- Skapa forum, arbetssätt och tekniska möjligheter att göra det enklare
+-->
+
+---
+
+![bg left](./assets/unsplash/lala-azizli-tfNyTfJpKvc-unsplash.jpg)
+
+## Work in progress
+
+Synliggör flödet av arbete genom värdeströmmen
+
+<!--
+- Synliggör och visualisera arbete
+- Skapa WIP limits
+- Visa vad som blockas
+- Börja så enkelt som möjligt
+- Analysera värdeströmmar
+-->
+
+---
+
+![bg right](./assets/unsplash/lala-azizli-tfNyTfJpKvc-unsplash.jpg)
+
+## One-piece flow
+
+Arbeta i små intervall (batches)
+
+<!--
+- Utför förändringar i så små intervall som möjligt
+- Ta förändringarna till produktion
+- -----------
 -->
 
 ---
 
 # Framgångsfaktorer 2
 
-- Samla in och implemenmtera feedback från kunder
+- Samla in och implementera feedback från kunder
 - Synliggör flödet av arbete genom värdeströmmen
 - Arbeta i små intervall (batches)
 - Främja och möjliggör experiment
@@ -287,7 +405,6 @@ Presenter notes.
 
 # Bra eller dålig?
 
-
 <!--
 Presenter notes.
 - Is this architecture good?
@@ -296,7 +413,6 @@ Presenter notes.
 ---
 
 # Bra eller dålig?
-
 
 <!--
 Presenter notes.
@@ -401,34 +517,36 @@ Presenter notes.
 
 ---
 
-# Resurser
-- Books
-  - [The Phoenix Project](https://www.goodreads.com/book/show/17255186-the-phoenix-project)
-  - [The Unicorn Project](https://www.goodreads.com/book/show/44333183-the-unicorn-project)
-  - [The Goal](https://www.goodreads.com/book/show/113934.The_Goal)
-  - [Accelerate](https://www.goodreads.com/book/show/35747076-accelerate)
+## Books
 
-- Podcasts
-  - [Kubernetes Podcast](https://kubernetespodcast.com/)
-  - [The New Stack Makers](https://thenewstack.io/podcasts/makers/)
-  - [The Cloudcast](https://www.thecloudcast.net/)
+- [The Phoenix Project](https://www.goodreads.com/book/show/17255186-the-phoenix-project)
+- [The Unicorn Project](https://www.goodreads.com/book/show/44333183-the-unicorn-project)
+- [The Goal](https://www.goodreads.com/book/show/113934.The_Goal)
+- [Accelerate](https://www.goodreads.com/book/show/35747076-accelerate)
+- [Making Work Visible](https://www.goodreads.com/book/show/36458712-making-work-visible)
+
+---
+
+## Podcasts
+
+- [Kubernetes Podcast](https://kubernetespodcast.com/)
+- [The New Stack Makers](https://thenewstack.io/podcasts/makers/)
+- [The Cloudcast](https://www.thecloudcast.net/)
+
+---
+
+## Links
+
+- [Docker](https://www.docker.com/)
+- [Kubernetes](https://kubernetes.io/)
+- [CNCF](https://www.cncf.io/)
+- [Kind](https://github.com/kubernetes-sigs/kind)
+- [Kubernetes Slack](https://slack.k8s.io/) (#se-users)
+- [Cloud Native GBG](https://www.meetup.com/TheCloudNativeGbg/)
+- [State of DevOps 2019](https://services.google.com/fh/files/misc/state-of-devops-2019.pdf)
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [Cell-Based Architecture](https://github.com/wso2/reference-architecture/blob/master/reference-architecture-cell-based.md)
 
 <!--
 Presenter notes.
 -->
-
----
-
-- Links
-  - [Docker](https://www.docker.com/)
-  - [Kubernetes](https://kubernetes.io/)
-  - [CNCF](https://www.cncf.io/)
-  - [Kind](https://github.com/kubernetes-sigs/kind)
-  - [Kubernetes Slack](https://slack.k8s.io/) (#se-users)
-  - [Cloud Native GBG](https://www.meetup.com/TheCloudNativeGbg/)
-
-<!--
-Presenter notes.
--->
-
----
