@@ -1,0 +1,39 @@
+<html>
+
+<head>
+<title>FooBar Inc.</title>
+</head>
+
+<body>
+  <style>
+    div {
+      background: lime;
+      text-align: center;
+      height: 100%;
+      text-align: center;
+    }
+  </style>
+
+  <div>
+    <span id="content"></span>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <script>
+  $( document ).ready(function(){
+    $.ajax({
+      url: 'http://localhost:8082',
+      type: 'get',
+      success: function(data){
+        $('#content').html(data);
+      },
+      error: function (xhr, ajaxOptions, thrownError) {
+        var errorMsg = 'Ajax request failed: ' + xhr.responseText;
+        $('#content').html(errorMsg);
+      }
+    });
+  });
+  </script>
+</body>
+
+</html>
