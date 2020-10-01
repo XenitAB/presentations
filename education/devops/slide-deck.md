@@ -545,9 +545,15 @@ Runtime
 - [Kind](https://github.com/kubernetes-sigs/kind)
 - [Kubernetes Slack](https://slack.k8s.io/) (#se-users)
 - [Cloud Native GBG](https://www.meetup.com/TheCloudNativeGbg/)
+
+---
+
+## Links
+
 - [State of DevOps 2019](https://services.google.com/fh/files/misc/state-of-devops-2019.pdf)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Cell-Based Architecture](https://github.com/wso2/reference-architecture/blob/master/reference-architecture-cell-based.md)
+- [CKA Udemy](https://www.udemy.com/course/certified-kubernetes-administrator-with-practice-tests/)
 
 <!--
 Presenter notes.
