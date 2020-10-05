@@ -1,0 +1,19 @@
+/* @theme xenitab */
+
+@import '~github-markdown-css';
+@import '~highlight.js/styles/github-gist';
+
+@font-face {
+  font-family: Lucida Sans;
+  src: url(/themes/assets/lucida-sans-unicode-regular.ttf);
+}
+
+section {
+  font-family: 'Lucida Sans';
+  background-image: url("/themes/assets/background_white.jpg");
+  background-color: #fff
+}
+
+section h1 {
+  color: #02D35F;
+}
