@@ -1,0 +1,56 @@
+/*!
+ * Xenit AB theme.
+ *
+ * @theme xenitab
+ * @author Simon Gottschlag
+ * @author Philip Laine
+ */
+
+@import '~github-markdown-css';
+@import '~highlight.js/styles/github-gist';
+
+@font-face {
+  font-family: 'Lucida Sans';
+  src: url(/themes/assets/lucida-sans-unicode-regular.ttf);
+}
+
+section {
+  font-family: 'Lucida Sans';
+  background-image: url("/themes/assets/background_white.jpg");
+  background-size: cover;
+  background-color: #fff;
+  color: #000;
+}
+
+section h1 {
+  color: #02D35F;
+}
+
+/*footer {
+  width: 50px;
+  height: 50px;
+  background-image: url("/themes/assets/logo_green.jpg");
+}*/
+
+section {
+  padding: 50px;
+}
+
+header,
+footer {
+  position: absolute;
+  left: 50px;
+  right: 50px;
+  height: 20px;
+  background-image: url("/themes/assets/logo_green.jpg");
+}
+
+header {
+  top: 30px;
+}
+
+footer {
+  bottom: 30px;
+}
+
+@import 'gaia'

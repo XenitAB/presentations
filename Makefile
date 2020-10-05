@@ -1,4 +1,2 @@
-DIR=education/devops
-
 server:
-	marp -s --theme-set ./themes -I .
+	marp -s --theme-set ./themes/xenitab.scss -I .
