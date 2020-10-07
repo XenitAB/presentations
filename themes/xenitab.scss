@@ -10,12 +10,13 @@
 @import '~highlight.js/styles/github-gist';
 
 @font-face {
-  font-family: 'Lucida Sans';
-  src: url(/themes/assets/lucida-sans-unicode-regular.ttf);
+  font-family: "Lucida Sans Unicode";
+  src: url("//db.onlinewebfonts.com/t/26c724b3b181aad246aa1321eaa9ea21.eot");
+  src: url("//db.onlinewebfonts.com/t/26c724b3b181aad246aa1321eaa9ea21.eot?#iefix") format("embedded-opentype"), url("//db.onlinewebfonts.com/t/26c724b3b181aad246aa1321eaa9ea21.woff2") format("woff2"), url("//db.onlinewebfonts.com/t/26c724b3b181aad246aa1321eaa9ea21.woff") format("woff"), url("//db.onlinewebfonts.com/t/26c724b3b181aad246aa1321eaa9ea21.ttf") format("truetype"), url("//db.onlinewebfonts.com/t/26c724b3b181aad246aa1321eaa9ea21.svg#Lucida Sans Unicode") format("svg");
 }
 
 section {
-  font-family: 'Lucida Sans';
+  font-family: 'Lucida Sans Unicode';
   background-image: url("/themes/assets/background_white.jpg");
   background-size: cover;
   background-color: #fff;
@@ -24,33 +25,6 @@ section {
 
 section h1 {
   color: #02D35F;
-}
-
-/*footer {
-  width: 50px;
-  height: 50px;
-  background-image: url("/themes/assets/logo_green.jpg");
-}*/
-
-section {
-  padding: 50px;
-}
-
-header,
-footer {
-  position: absolute;
-  left: 50px;
-  right: 50px;
-  height: 20px;
-  background-image: url("/themes/assets/logo_green.jpg");
-}
-
-header {
-  top: 30px;
-}
-
-footer {
-  bottom: 30px;
 }
 
 @import 'gaia'

@@ -16,10 +16,9 @@ paginate: true
 
 # Agenda
 
-- 18.00 - 18.10 Introduction
-- 18.10 - 18.25 Show and tell
-- 18.25 - 19.00 Cloud Native and Machine Learning at the edge
-- 19.00 - 19.30 TBD
+- 18.00 - 18.15 Introduction
+- 18.15 - 18.45 Kubernetes v1.19
+- 18.45 - 19.15 Cloud Native and Machine Learning at the edge
 
 ---
 
@@ -61,5 +60,23 @@ paginate: true
 # Podcast Tip
 
 - Kubelist Podcast
+- Episode #1 released Sepetember 30th
+
+![bg w:60% left](./assets/no-license/the-kubelist-podcast.jpg)
+
+---
+
+# Meetup #15
+
+- November 5th
+- Backstage
+- Flux v2 (GitOps Toolkit)
+
+---
+
+# Meetup #16
+
+- December 3rd
+- TBD
 
 ---
