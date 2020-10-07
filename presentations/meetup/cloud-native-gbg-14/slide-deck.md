@@ -78,6 +78,6 @@ paginate: true
 # Meetup #16
 
 - December 3rd
-- TBD
+- TBA
 
 ---
