@@ -19,6 +19,7 @@ paginate: true
 - 18.00 - 18.15 Introduction
 - 18.15 - 18.45 Kubernetes v1.19
 - 18.45 - 19.15 Cloud Native and Machine Learning at the edge
+- 19.15 - 19.35 PAT Failure Story
 
 ---
 
