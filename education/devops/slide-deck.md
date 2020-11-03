@@ -233,23 +233,6 @@ Använd trunk-based development-metoder
 
 ---
 
-![bg left](./assets/unsplash/scott-webb-yekGLpc3vro-unsplash.jpg)
-
-## Säkerhet
-
-Injecera säkerhet i alla steg
-
-<!--
-- Säkerhet är inget man tänker på efteråt
-- Se till att ha med det i tanken på allt som görs
-- Se till att lära dig mer om säkerhet hela tiden
-- Flagga för dem i teamet/bolaget om du är osäker
-- Få in produkter och arbetssätt som ökar säkerhet i alla steg
-- Automatisera så mycket du kan
--->
-
----
-
 ![bg right](./assets/unsplash/sharon-pittaway-4_hFxTsmaO4-unsplash.jpg)
 
 ## Microservices
@@ -279,51 +262,6 @@ Arkitektur för att möjliggöra autonoma team
 - Se till att varje team kan jobba på det sättet som gör dem mest effektiva
 - Skapa good practices och guidelines, men tvinga inte
 - Jobba aktivt med Developer Experience
--->
-
----
-
-![bg right](./assets/unsplash/celpax-1Lf5Adh9SCg-unsplash.jpg)
-
-## Feedback
-
-Samla in och implementera feedback från kunder
-
-<!--
-- Se till att få feedback så tidigt som möjligt och så ofta som möjligt
-- Utgå inte från att det du tror är viktigt faktiskt är viktigt för kunden
-- Skapa forum, arbetssätt och tekniska möjligheter att göra det enklare
--->
-
----
-
-![bg left](./assets/unsplash/lala-azizli-tfNyTfJpKvc-unsplash.jpg)
-
-## Work in progress
-
-Synliggör flödet av arbete genom värdeströmmen
-
-<!--
-- Synliggör och visualisera arbete
-- Skapa WIP limits
-- Visa vad som blockas
-- Börja så enkelt som möjligt
-- Analysera värdeströmmar
--->
-
----
-
-![bg right](./assets/unsplash/lenny-kuhne-jHZ70nRk7Ns-unsplash.jpg)
-
-## One-piece flow
-
-Arbeta i små intervall (batches)
-
-<!--
-- Utför förändringar i så små intervall som möjligt
-- Testa och ta den lilla förändringen till produktion
-- Gör en sak åt gången och ta den hela vägen
-- Kortare time to market, lättare att säga vad som gått fel
 -->
 
 ---
@@ -367,6 +305,12 @@ Främja och möjliggör experiment
 
 -->
 
+# Verktyg
+
+- Hur gör jag rent praktiskt?
+
+---
+
 # Wall of Confusion
 
 - Motsatsen till DevOps
@@ -382,70 +326,6 @@ Presenter notes.
   - We have dependencies, os, etc.
 - How do we avoid throwing the app over the wall?
 - What tools are there that we can use
--->
-
----
-
-# Hur jobbar bra företag?
-
-- Gemensam delad vision
-- Arkitektur som är flexibel
-- Värde levereras ofta
-- Avbetalnigns plan för tekniskskuld
-- Utvecklare får mycket frihet och ansvar
-  - Build, test, run, debug
-
-<!--
-Presenter notes.
-
--->
-
----
-
-# Kod är inte konst
-
-:(
-
-![bg right](./assets/unsplash/ryan-stefan-5K98ScREEUY-unsplash.jpg)
-
----
-
-# Utvecklarens mantra
-
-- Låt kulturen påverkar din arkitektur
-- Värt att fråga
-  - Upfyller jag Unix filosofin
-  - Är det konfiguration eller logik
-  - Hur mycket "vet" din applikation?
-  - Vem påverkas av min ändring?
-
----
-
-# Bra eller dåligt?
-
-![bg 60%](./assets/uber-micro.png)
-
-<!--
-Presenter notes.
-- Is this architecture good?
-- Dare to try to explain why something is good or bad.
--->
-
----
-
-# Kundcase
-
-- Kunden FooBar har idag en existerande produkt
-  - Frontend och backend
-  - Byggt på NodeJS
-- Produktions miljö består av två servrar
-  - Koden laddas upp till filserver för att gå i produktion
-  - Sen flyttar man över koden till båda servrarna
-  - Frontend och backend kör på båda servrarna
-
-<!--
-Presenter notes.
-- Use the customer case to show what tooling is available to us.
 -->
 
 ---
@@ -489,7 +369,7 @@ Presenter notes.
 
 ---
 
-# CI
+# Continuous Integration (CI)
 
 Keep it simple stupid
 
@@ -501,20 +381,51 @@ Presenter notes.
 
 ---
 
-# Kubernetes
+# Värt att fråga
+- Hur mycket "vet" min applikation?
+- Vem påverkas av min förändring?
+- Hur många syften uppfyller min applikation
 
-Hela paketet i en lösning
+---
 
-![bg left](./assets/kubernetes.png)
+# Resultat
+
+![bg 60%](./assets/uber-micro.png)
 
 <!--
 Presenter notes.
-
-Network
-Scaling
-Persistence
-Runtime
+- Is this architecture good?
+- Dare to try to explain why something is good or bad.
 -->
+
+---
+
+# Lösningar skapar problem
+
+<!-- _class: lead -->
+
+---
+
+# Nya problem
+- Starta en container på en server
+- Skicka konfiguration till en container
+- Kommunikation mellan containers
+- Skala min container
+- Trafik från internet till min container
+- Disk för min container
+- Allokera RAM och CPU för min container
+
+---
+
+# Kubernetes
+Kubernetes is a portable, extensible, open-source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available.
+
+---
+
+# Varför ska jag bry mig?
+- Jag har en Java backend
+- Jag vill vara säker på att den alltid kör
+- Jag vill snabbt göra förändringar
 
 ---
 
