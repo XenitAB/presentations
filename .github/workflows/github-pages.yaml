@@ -1,53 +1,17 @@
 name: GitHub Pages
 
 on: push
-#  push:
-#    branches:
-#      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Detect Node version from .nvmrc
-        id: node_version
-        run: echo "::set-output name=nvmrc::$(cat .nvmrc)"
-
-      - name: Install Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ steps.node_version.outputs.nvmrc }}
-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install dependencies and Puppeteer
-        run: |
-          npm ci
-          sudo apt-get install libgbm-dev
-          npm i puppeteer --no-save
-
-      - name: Build Marp slide deck
-        run: |
-          CHROME_PATH=$(node .puppeteer.js) npm run build
-          touch ./dist/.nojekyll
-        env:
-          # Please update URL if you want to use custom domain
-          URL: https://${{ github.event.repository.owner.name }}.github.io/${{ github.event.repository.name }}
-
-          # Recommend to set lang for your deck to get better rendering for Open Graph image
-          LANG: en-US
-
-      - name: Deploy to GitHub pages
-        uses: JamesIves/github-pages-deploy-action@releases/v3
-        with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: dist
+    - uses: actions/checkout@v2
+    - name: Build & Deploy to GitHub Pages
+      env:
+        MARP_ARGS: "--theme-set ./themes/xenitab.scss -I ."
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PUBLISH_TO_BRANCH: gh-pages
+        BASE_URL: https://alexsci.com/test-marp-action/
+      uses: ralexander-phi/marp-action@master
