@@ -417,15 +417,40 @@ Presenter notes.
 
 ---
 
+# Känner du igen dig?
+- Jag har en Java backend
+- Jag vill vara säker på att den alltid kör
+- Jag vill snabbt göra förändringar
+
+---
+
 # Kubernetes
 Kubernetes is a portable, extensible, open-source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available.
 
 ---
 
-# Varför ska jag bry mig?
-- Jag har en Java backend
-- Jag vill vara säker på att den alltid kör
-- Jag vill snabbt göra förändringar
+# Kubernetes
+- portable - Du kan köra det var du vill
+- extensible - Du kan utöka funktioner
+- open-source - Källkoden är öppen
+- containerized workloads - Kör containers
+- declarative configuration - Beskriv vad inte hur
+
+---
+
+# Lingua Franca
+- Språket som förenar Dev och Ops
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pi
+spec:
+  containers:
+    - name: pi
+      image: perl
+      command: ["perl",  "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+```
 
 ---
 
