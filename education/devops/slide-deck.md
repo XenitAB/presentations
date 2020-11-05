@@ -37,11 +37,10 @@ Presenter notes.
 
 # Agenda
 
-- Introduktion (15 min)
-- Varför DevOps-kulturen och var kommer den ifrån (30 min)
+- Introduktion (10 min)
+- Varför DevOps-kulturen och var kommer den ifrån (25 min)
 - Paus (15 min)
-- Hur jobbar företag för att främja kulturen (30 min)
-- Vilka verktyg och arbetssätt möjliggör kulturen (30 min)
+- Vilka verktyg och arbetssätt möjliggör kulturen (55 min)
 
 <!--
 Presenter notes.
@@ -343,6 +342,12 @@ Presenter notes.
 
 ---
 
+# Docker
+
+![bg w:60%](./assets/docker-flow.png)
+
+---
+
 # Exempel
 
 ```Dockerfile
@@ -372,6 +377,8 @@ Presenter notes.
 # Continuous Integration (CI)
 
 Keep it simple stupid
+- Unit Test
+- Build
 
 ![bg right](./assets/ci.png)
 
@@ -381,7 +388,7 @@ Presenter notes.
 
 ---
 
-# Värt att fråga
+# Svåra Frågor
 - Hur mycket "vet" min applikation?
 - Vem påverkas av min förändring?
 - Hur många syften uppfyller min applikation
@@ -417,10 +424,18 @@ Presenter notes.
 
 ---
 
-# Känner du igen dig?
-- Jag har en Java backend
-- Jag vill vara säker på att den alltid kör
-- Jag vill snabbt göra förändringar
+# Typisk kund
+- Har en Java backend
+- Vill vara säker på att den alltid kör
+- Vill snabbt göra förändringar
+
+---
+
+<!-- _footer: "" -->
+
+![bg](./assets/unsplash/andrew-neel-TTPMpLl_2lc-unsplash.jpg)
+
+# PAUS
 
 ---
 
