@@ -1,2 +1,2 @@
 # Presentations
-Collection of XenitAB presentations for different purposes.
+Collection of Xenit AB presentations for different purposes.

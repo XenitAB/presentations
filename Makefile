@@ -1,6 +1,2 @@
-DIR=education/devops
-
 server:
-	marp -s $(DIR)
-
-generate:
+	marp -s --theme-set ./themes/xenitab.scss -I .

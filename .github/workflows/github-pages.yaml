@@ -1,0 +1,17 @@
+name: GitHub Pages
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build & Deploy to GitHub Pages
+      env:
+        MARP_ARGS: "--theme-set ./themes/xenitab.scss -I ."
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PUBLISH_TO_BRANCH: gh-pages
+        BASE_URL: https://alexsci.com/test-marp-action/
+      uses: ralexander-phi/marp-action@master
