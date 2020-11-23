@@ -9,6 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: setup node
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "12"
+      - name: install marp
+        run: npm install @marp-team/marp-cli
       - uses: actions/checkout@v2
       - name: marp generate
         run: make generate
