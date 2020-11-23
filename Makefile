@@ -8,7 +8,7 @@ generate:
 	set -e
 	for d in presentations/*; do
 		for dd in $$d/*; do
-			marp $$dd/slide-deck.md -o website/$$dd/index.html
+			marp $$dd/slide-deck.md -o "website/$${dd#*/}/index.html"
 		done
 	done
 	cp -r themes website/
