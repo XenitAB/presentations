@@ -18,8 +18,8 @@ paginate: true
 # Agenda
 
 - Landscape
-- Understanding Terraform
-- Terraform Components
+- Core
+- Scale
 
 ---
 
@@ -27,6 +27,7 @@ paginate: true
 
 - Cloud Formation
 - ARM Templates
+- AWS CDK
 - SDKs
 
 ---
@@ -46,8 +47,7 @@ paginate: true
   - JSON
   - HCL
   - Python or Typescript
-- Execution Order
-- Statful/Stateless
+- Execution Method
 
 ---
 
@@ -72,11 +72,44 @@ paginate: true
 
 ---
 
+# Example
+
+https://github.com/XenitAB/cloud-automation/blob/master/azure/packer/azure-pipelines-agent/ubuntu1804-ansible.yaml
+
+---
+
 # Dependency based
 
 - Order is based on dependencies
+- Calculate desired state
 
 ![bg contain right](./assets/dependency.jpg)
+
+---
+
+# Example
+
+```hcl
+provider "azurerm" {
+  features = {}
+}
+resource "azurerm_resource_group" "main" {
+  name     = "${var.prefix}-resources"
+  location = "West US 2"
+}
+resource "azurerm_virtual_network" "main" {
+  name                = "${var.prefix}-network"
+  address_space       = ["10.0.0.0/16"]
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+}
+```
+
+---
+
+# Result
+
+![center](./assets/graph.jpg)
 
 ---
 
@@ -84,26 +117,87 @@ paginate: true
 
 - Vertex - Circles
 - Edge - Lines
-- Directed - Edges are directed
+- Directed - Edges have direction
 - Acyclyc - No loops in the graph
 
 ![bg contain left](./assets/dag.jpg)
 
 ---
 
-# Example
+# Terraform Core
 
-![center](./assets/dag-example.png)
+- Does the heavy lifting
+- Calculates order of the graph
+- Calculates desired state vs current state
 
 ---
 
 # Providers
 
+- Implements the resources
+- Link between Terraform and Cloud API
+- CRUD for each resource
+
 ---
 
+# Separation of Duties
+
+- Terraform core does the heavy lifting
+  - Calculates order
+  - Calculates changes required
+- Providers implement specific logic
+  - Implements a set of resources
+
+---
+
+# When not to use Terraform
+
+- OS configuration
+  - Packer
+- Existing infrastructure
+  - Can be tricky to import
+- File templating
+- Logic heavy processes
+  - Avoid shelling out
+
+---
+
+# Terraform at scale
+
+- Modules, modules, modules
+  - Custom resource type
+  - Modules allow you to resuse terraform
+  - Reference modules with git
+- Combine modules with other modules
+
+---
+
+# Example
+
+```hcl
+module "azpagent" {
+  source = "github.com/xenitab/terraform-modules//modules/azure
+            /azure-pipelines-agent-vmss?ref=main"
+
+  environment                      = "dev"
+  location_short                   = "we"
+  name                             = "azpagent"
+  azure_pipelines_agent_image_name = "azp-agent-2020-11-16T22-24-11Z"
+  vmss_sku                         = "Standard_B2s"
+  vmss_subnet_config = {
+    name                 = "sn-dev-we-hub-servers"
+    virtual_network_name = "vnet-dev-we-hub"
+    resource_group_name  = "rg-dev-we-hub"
+  }
+}
+```
+
+---
 
 # Resources
 
 - https://www.youtube.com/watch?v=Ce3RNfRbdZ0
+- https://github.com/XenitAB/terraform-modules
+- https://www.packer.io/
 
 ---
