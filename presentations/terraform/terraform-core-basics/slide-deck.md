@@ -38,6 +38,7 @@ paginate: true
 - Ansible
 - Pulumi
 - Puppet
+- https://landscape.cncf.io/category=automation-configuration&format=card-mode&grouping=category
 
 ---
 
@@ -137,16 +138,15 @@ resource "azurerm_virtual_network" "main" {
 - Implements the resources
 - Link between Terraform and Cloud API
 - CRUD for each resource
+- https://registry.terraform.io/browse/providers
 
 ---
 
-# Separation of Duties
+# Benefits of Terraform
 
-- Terraform core does the heavy lifting
-  - Calculates order
-  - Calculates changes required
-- Providers implement specific logic
-  - Implements a set of resources
+- Possible to delete what has been created
+- Plan before apply
+- Easily recover manual changes
 
 ---
 
