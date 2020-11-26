@@ -2,8 +2,8 @@
 
 # Next Task
 
-Click [here](TASK-04) to go to the next task.
+Click [here](TASK-04.md) to go to the next task.
 
 # Go back
 
-Click [here](../README) to go back to task overview.
+Click [here](../README.md) to go back to task overview.

@@ -227,8 +227,8 @@ You have now successfully started a web server and upgraded it using Docker. Con
 
 # Next Task
 
-Click [here](TASK-02) to go to the next task.
+Click [here](TASK-02.md) to go to the next task.
 
 # Go back
 
-Click [here](../README) to go back to task overview.
+Click [here](../README.md) to go back to task overview.
