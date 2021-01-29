@@ -4,6 +4,318 @@
 
 - Same as in LAB #01 with the addition of:
 - [GitHub Account](https://github.com/join)
+- [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+
+In this lab, terraform version `0.14.5` is used.
+
+## Description
+
+In this lab, you will deploy a web app using Infrastructure as Code with Terraform as well as configuring the web app to use a GitHub repository for application deployment.
+
+### Creating the repository
+
+Login to GitHub and create a new public repository. Create it on your personal account and not your organization. I called it: `simongottschlag/cloud-and-scalability-lab`
+
+I added a README file when creating it, as well as a `.gitignore` with the Terraform template.
+
+Now clone the repository to your local computer:
+
+```shell
+git clone git@github.com:<username>/<repo name>.git
+```
+
+In the above case I use SSH and I have already uploaded an SSH key to my GitHub account. Read more here: [Connecting to GitHub with SSH](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh)
+
+Open the newly cloned repository with VS Code.
+
+### Scaffolding
+
+Everything in here is expected to be run in the newly cloned directory.
+
+**GIT IGNORE**
+
+Append the contents of [Node.gitignore](https://github.com/github/gitignore/blob/master/Node.gitignore) to your .gitignore and save.
+
+```shell
+git add .gitignore
+git status
+git commit -m "Add node.js ignore settings"
+git push
+```
+
+**TERRAFORM**
+
+Create the folder `terraform` in the root and the following files:
+
+```shell
+└── terraform
+    ├── main.tf
+    ├── outputs.tf
+    └── variables.tf
+```
+
+**NODE.JS**
+
+Create the folder `node-webapp`:
+
+```shell
+npx express-generator node-webapp --view pug
+```
+
+**FILES**
+
+You should now have a folder and file structure like this in your repository:
+
+```shell
+├── README.md
+├── node-webapp
+│   ├── app.js
+│   ├── bin
+│   │   └── www
+│   ├── package.json
+│   ├── public
+│   │   ├── images
+│   │   ├── javascripts
+│   │   └── stylesheets
+│   │       └── style.css
+│   ├── routes
+│   │   ├── index.js
+│   │   └── users.js
+│   └── views
+│       ├── error.pug
+│       ├── index.pug
+│       └── layout.pug
+└── terraform
+    ├── main.tf
+    ├── outputs.tf
+    └── variables.tf
+```
+
+**COMMIT**
+
+Commit the terraform files:
+
+```shell
+git add terraform
+git status
+git commit -m "terraform scaffolding"
+git push
+```
+
+Commit the node files:
+
+```shell
+git add node-webapp
+git status
+git commit -m "node scaffolding"
+git push
+```
+
+**NOTES**
+
+Be really careful when commiting and pushing to git, make sure to never **ever** commit secrets. If you ever do it by mistake, you should change that secret **DIRECTLY**. If it's a secret for an organization, you should own up to your mistake and talk to your manager to make sure it's handled the right way.
+
+### Terraform
+
+Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. Terraform can manage existing and popular service providers as well as custom in-house solutions. Read more about it here: [Introduction to Terraform](https://www.terraform.io/intro/index.html)
+
+If you want to have som highlighting in the code, you can use the following VS Code extension: [4ops.terraform](https://marketplace.visualstudio.com/items?itemName=4ops.terraform) (there are others, but this one is small and easy to use)
+
+**GIT BRANCH**
+
+Create a git branch for the work you will be doing for terraform:
+
+```shell
+git checkout -b feature/initial-terraform-code
+```
+
+**VARIABLES**
+
+More info about variables: [Input Variables](https://www.terraform.io/docs/language/values/variables.html)
+
+Open `terraform/variables.tf` and create a few common variables to use:
+
+```terraform
+variable "environment" {
+  description = "The environment short name"
+  type        = string
+  default     = "lab"
+}
+
+variable "location_long" {
+  description = "The location where to place resources"
+  type        = string
+  default     = "west europe"
+}
+
+variable "location" {
+  description = "The location short name"
+  type        = string
+  default     = "we"
+}
+
+variable "name" {
+  description = "The name to use for the different parts of the deployment"
+  type        = string
+  default     = "webapp1"
+}
+```
+
+Make sure to change the `name` variable according to the first lab.
+
+**MAIN**
+
+Open the file `terraform/main.tf` and add the following:
+
+```terraform
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "2.45.1"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+locals {
+  resource_group_name = "rg-${var.environment}-${var.location}-${var.name}"
+}
+
+resource "azurerm_resource_group" "this" {
+  name     = local.resource_group_name
+  location = var.location_long
+}
+```
+
+You can find more information about the above configuration here:
+
+- [required_providers](https://www.terraform.io/docs/language/providers/requirements.html)
+- [provider azurerm](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs)
+- [locals](https://www.terraform.io/docs/language/values/locals.html)
+- [azurerm_resource_group](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group)
+
+There are extensions to handle formatting as well, but if you don't have them you can always run the following command to format the terraform files: `terraform fmt terraform/`
+
+**INITIALIZE**
+
+Before we actually use terraform with Azure, we need to verify that we are logged in with the Azure CLI and that we are working with the correct subscription.
+
+Make sure all files are saved.
+
+```shell
+az login
+az account show
+az account set --subscription "Visual Studio Enterprise"
+```
+
+The [init](https://www.terraform.io/docs/cli/commands/init.html) command is used to initialize a working directory containing Terraform configuration files.
+
+```shell
+cd terraform
+terraform init
+```
+
+The folder structure in terraform should now look something like this:
+
+```terraform
+├── .terraform
+│   └── providers
+│       └── registry.terraform.io
+│           └── hashicorp
+│               └── azurerm
+│                   └── 2.45.1
+│                       └── darwin_amd64
+│                           └── terraform-provider-azurerm_v2.45.1_x5
+├── .terraform.lock.hcl
+├── main.tf
+├── outputs.tf
+└── variables.tf
+```
+
+Make sure that the `.terraform` is ignored by `.gitignore`: `git check-ignore -v .terraform/*`
+
+You should see something like: `.gitignore:2:**/.terraform/*    .terraform/providers`
+
+**PLAN**
+
+The [plan](https://www.terraform.io/docs/cli/commands/plan.html) command is used to create an execution plan. Terraform performs a refresh, unless explicitly disabled, and then determines what actions are necessary to achieve the desired state specified in the configuration files.
+
+```shell
+terraform plan
+```
+
+You should see an output like this:
+
+```shell
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # azurerm_resource_group.this will be created
+  + resource "azurerm_resource_group" "this" {
+      + id       = (known after apply)
+      + location = "westeurope"
+      + name     = "rg-lab-we-webapp1"
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+------------------------------------------------------------------------
+
+Note: You didn't specify an "-out" parameter to save this plan, so Terraform
+can't guarantee that exactly these actions will be performed if
+"terraform apply" is subsequently run.
+```
+
+**APPLY**
+
+The [apply](https://www.terraform.io/docs/cli/commands/apply.html) command is used to apply the changes required to reach the desired state of the configuration, or the pre-determined set of actions generated by a terraform plan execution plan.
+
+Run the apply command:
+
+```shell
+terraform apply
+```
+
+You should see something like the following in the output and be asked to write `yes` (this can be skipped if you add `-auto-approve`, but be careful with that):
+
+```shell
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # azurerm_resource_group.this will be created
+  + resource "azurerm_resource_group" "this" {
+      + id       = (known after apply)
+      + location = "westeurope"
+      + name     = "rg-lab-we-webapp1"
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: 
+```
+
+When you've written `yes` you should see an output like this:
+
+```shell
+azurerm_resource_group.this: Creating...
+azurerm_resource_group.this: Creation complete after 1s [id=/subscriptions/<subscription_uuid>/resourceGroups/rg-lab-we-webapp1]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+```
 
 # Next Lab
 
