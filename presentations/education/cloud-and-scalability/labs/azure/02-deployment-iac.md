@@ -360,6 +360,23 @@ resource "azurerm_app_service" "this" {
 }
 ```
 
+Run terraform:
+
+```shell
+terraform apply
+cd ..
+```
+
+Now commit the changes: (make sure you are in the root of the repository and that status shows `terraform/main.tf`)
+
+```shell
+git add terraform/main.tf
+git status
+git commit -m "add app service"
+git push
+```
+
+
 **CONTINUOUS DEPLOYMENT**
 
 It is possible to point the App Service to a GitHub repository using terraform. I've had a lot of issues with the App Service completing the configuration gracefully when doing it and to save time during the lab I've chosen to enable it using the portal or Azure CLI.
@@ -419,12 +436,12 @@ router.get('/', function (req, res, next) {
 });
 ```
 
-Now commit the changes: (make sure you are in the root of the repository and that status shows `main.tf` and `index.js`)
+Now commit the changes: (make sure you are in the root of the repository and that status shows `routes/index.js`)
 
 ```shell
 git add .
 git status
-git commit -m "update terraform and title"
+git commit -m "update title"
 git push
 ```
 
