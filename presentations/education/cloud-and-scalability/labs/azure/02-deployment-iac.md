@@ -398,6 +398,12 @@ Enable it using the Azure Portal:
 - Configure Code -> Branch: `main`
 - Press `Continue` at the bottom -> Press `Finish`
 
+Enable it using Azure CLI:
+
+```shell
+az webapp deployment source config --resource-group rg-lab-we-webapp1 --name wa-lab-we-webapp1 --repo-url https://github.com/<org / username>/<repo name> --branch main
+```
+
 **VALIDATION**
 
 Wait for the sync to go through and then browse your app service and verify that you can access it.
@@ -413,7 +419,7 @@ router.get('/', function (req, res, next) {
 });
 ```
 
-Now commit the changes:
+Now commit the changes: (make sure you are in the root of the repository and that status shows `main.tf` and `index.js`)
 
 ```shell
 git add .
@@ -422,7 +428,152 @@ git commit -m "update terraform and title"
 git push
 ```
 
-Verify that in `Deployment Center` that tha change is picked up and when you browse the site you see 
+Verify that in `Deployment Center` that tha change is picked up and when you browse the site you see `Welcome to AzureLab`. 
+
+#### Cleaning up
+
+Now use terraform to remove everything:
+
+```terraform
+cd terraform
+terraform destroy
+```
+
+This should show an output like this:
+
+```shell
+azurerm_resource_group.this: Refreshing state... [id=/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1]
+azurerm_app_service_plan.this: Refreshing state... [id=/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1]
+azurerm_app_service.this: Refreshing state... [id=/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1]
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # azurerm_app_service.this will be destroyed
+  - resource "azurerm_app_service" "this" {
+      - app_service_plan_id               = "/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
+      - app_settings                      = {} -> null
+      - client_affinity_enabled           = false -> null
+      - client_cert_enabled               = false -> null
+      - custom_domain_verification_id     = "***" -> null
+      - default_site_hostname             = "wa-lab-we-webapp1.azurewebsites.net" -> null
+      - enabled                           = true -> null
+      - https_only                        = false -> null
+      - id                                = "/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1" -> null
+      - location                          = "westeurope" -> null
+      - name                              = "wa-lab-we-webapp1" -> null
+      - outbound_ip_address_list          = [
+          - "[...]",
+        ] -> null
+      - outbound_ip_addresses             = "[...]" -> null
+      - possible_outbound_ip_address_list = [
+          - "[...]",
+        ] -> null
+      - possible_outbound_ip_addresses    = "[...]" -> null
+      - resource_group_name               = "rg-lab-we-webapp1" -> null
+      - site_credential                   = [
+          - {
+              - password = "***"
+              - username = "$wa-lab-we-webapp1"
+            },
+        ] -> null
+      - tags                              = {} -> null
+
+      - auth_settings {
+          - additional_login_params        = {} -> null
+          - allowed_external_redirect_urls = [] -> null
+          - enabled                        = false -> null
+          - token_refresh_extension_hours  = 0 -> null
+          - token_store_enabled            = false -> null
+        }
+
+      - logs {
+          - detailed_error_messages_enabled = false -> null
+          - failed_request_tracing_enabled  = false -> null
+
+          - application_logs {
+              - file_system_level = "Off" -> null
+            }
+
+          - http_logs {
+            }
+        }
+
+      - site_config {
+          - always_on                   = false -> null
+          - default_documents           = [] -> null
+          - dotnet_framework_version    = "v4.0" -> null
+          - ftps_state                  = "AllAllowed" -> null
+          - http2_enabled               = false -> null
+          - ip_restriction              = [] -> null
+          - linux_fx_version            = "NODE|14-lts" -> null
+          - local_mysql_enabled         = false -> null
+          - managed_pipeline_mode       = "Integrated" -> null
+          - min_tls_version             = "1.2" -> null
+          - number_of_workers           = 1 -> null
+          - remote_debugging_enabled    = false -> null
+          - remote_debugging_version    = "VS2019" -> null
+          - scm_ip_restriction          = [] -> null
+          - scm_type                    = "GitHub" -> null
+          - scm_use_main_ip_restriction = false -> null
+          - use_32_bit_worker_process   = false -> null
+          - websockets_enabled          = false -> null
+
+          - cors {
+              - allowed_origins     = [] -> null
+              - support_credentials = false -> null
+            }
+        }
+
+      - source_control {
+          - branch             = "main" -> null
+          - manual_integration = false -> null
+          - repo_url           = "https://github.com/<org / username>/<repo name>" -> null
+          - rollback_enabled   = false -> null
+          - use_mercurial      = false -> null
+        }
+    }
+
+  # azurerm_app_service_plan.this will be destroyed
+  - resource "azurerm_app_service_plan" "this" {
+      - id                           = "/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
+      - is_xenon                     = false -> null
+      - kind                         = "linux" -> null
+      - location                     = "westeurope" -> null
+      - maximum_elastic_worker_count = 1 -> null
+      - maximum_number_of_workers    = 10 -> null
+      - name                         = "asp-lab-we-webapp1" -> null
+      - per_site_scaling             = false -> null
+      - reserved                     = true -> null
+      - resource_group_name          = "rg-lab-we-webapp1" -> null
+      - tags                         = {} -> null
+
+      - sku {
+          - capacity = 1 -> null
+          - size     = "B1" -> null
+          - tier     = "Basic" -> null
+        }
+    }
+
+  # azurerm_resource_group.this will be destroyed
+  - resource "azurerm_resource_group" "this" {
+      - id       = "/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1" -> null
+      - location = "westeurope" -> null
+      - name     = "rg-lab-we-webapp1" -> null
+      - tags     = {} -> null
+    }
+
+Plan: 0 to add, 0 to change, 3 to destroy.
+```
+
+Please, always check and double check the output before you write `yes`. It won't be the first time someone deletes too much using this command.
+
+## LAB DONE!
+
+Well done! :-)
 
 # Next Lab
 
