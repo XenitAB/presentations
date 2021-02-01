@@ -387,7 +387,7 @@ resource "azurerm_app_service" "this" {
 Enable it using the Azure Portal:
 
 - Search for the App Service name (example: `wa-lab-we-webapp1`) in the top search bar
-- Press `Deployment Center`
+- Press `Deployment Center` (it may say `(Classic)` now)
 - Continuous Deployment (CI / CD) -> Select `GitHub`
 - You may have to authorize Azure Portal to access your GitHub at this stage
 - Press `Continue` at the bottom
