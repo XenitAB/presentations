@@ -56,39 +56,40 @@ Create the folder `terraform` in the root and the following files:
 
 **NODE.JS**
 
-Create the folder `node-webapp`:
+Create the scaffolding for node:
 
 ```shell
-npx express-generator node-webapp --view pug
+npx express-generator . --view pug
 ```
+
+Good to know: If you place your node code in a sub-directory, you need to configure a lot more to get it working out-of-the box. More info [here](https://github.com/projectkudu/kudu/wiki/Customizing-deployments).
 
 **FILES**
 
 You should now have a folder and file structure like this in your repository:
 
 ```shell
+├── app.js
+├── bin
+│   └── www
+├── package.json
+├── public
+│   ├── images
+│   ├── javascripts
+│   └── stylesheets
+│       └── style.css
 ├── README.md
-├── node-webapp
-│   ├── app.js
-│   ├── bin
-│   │   └── www
-│   ├── package.json
-│   ├── public
-│   │   ├── images
-│   │   ├── javascripts
-│   │   └── stylesheets
-│   │       └── style.css
-│   ├── routes
-│   │   ├── index.js
-│   │   └── users.js
-│   └── views
-│       ├── error.pug
-│       ├── index.pug
-│       └── layout.pug
-└── terraform
-    ├── main.tf
-    ├── outputs.tf
-    └── variables.tf
+├── routes
+│   ├── index.js
+│   └── users.js
+├── terraform
+│   ├── main.tf
+│   ├── outputs.tf
+│   └── variables.tf
+└── views
+    ├── error.pug
+    ├── index.pug
+    └── layout.pug
 ```
 
 **COMMIT**
@@ -105,7 +106,7 @@ git push
 Commit the node files:
 
 ```shell
-git add node-webapp
+git add .
 git status
 git commit -m "node scaffolding"
 git push
@@ -316,6 +317,112 @@ azurerm_resource_group.this: Creation complete after 1s [id=/subscriptions/<subs
 
 Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 ```
+
+#### Creating the web app
+
+**TERRAFORM**
+
+Update your `locals {}` to reflect the new names:
+
+```terraform
+locals {
+  resource_group_name   = "rg-${var.environment}-${var.location}-${var.name}"
+  app_service_plan_name = "asp-${var.environment}-${var.location}-${var.name}"
+  app_service_name      = "wa-${var.environment}-${var.location}-${var.name}"
+}
+``` 
+
+Create an App Service Plan and an App Service:
+
+```terraform
+resource "azurerm_app_service_plan" "this" {
+  name                = local.app_service_plan_name
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  kind                = "Linux"
+  reserved            = true
+
+  sku {
+    tier = "Basic"
+    size = "B1"
+  }
+}
+
+resource "azurerm_app_service" "this" {
+  name                = local.app_service_name
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  app_service_plan_id = azurerm_app_service_plan.this.id
+
+  site_config {
+    linux_fx_version = "NODE|14-lts"
+  }
+}
+```
+
+**CONTINUOUS DEPLOYMENT**
+
+It is possible to point the App Service to a GitHub repository using terraform. I've had a lot of issues with the App Service completing the configuration gracefully when doing it and to save time during the lab I've chosen to enable it using the portal or Azure CLI.
+
+If you want to try (I recommend you cancelling it if nothing happens in 10 minutes), you can use the following:
+
+```terraform
+resource "azurerm_app_service" "this" {
+  name                = local.app_service_name
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  app_service_plan_id = azurerm_app_service_plan.this.id
+
+  site_config {
+    linux_fx_version = "NODE|14-lts"
+  }
+
+  source_control {
+    repo_url           = "https://github.com/<org>/<repo>"
+    branch             = "<branch>"
+  }
+}
+``` 
+
+Enable it using the Azure Portal:
+
+- Search for the App Service name (example: `wa-lab-we-webapp1`) in the top search bar
+- Press `Deployment Center`
+- Continuous Deployment (CI / CD) -> Select `GitHub`
+- You may have to authorize Azure Portal to access your GitHub at this stage
+- Press `Continue` at the bottom
+- Build provider -> Select `App Service build service`
+- Press `Continue` at the bottom
+- Configure Code -> Organization: `<org / username>`
+- Configure Code -> Repository: `<repo name>`
+- Configure Code -> Branch: `main`
+- Press `Continue` at the bottom -> Press `Finish`
+
+**VALIDATION**
+
+Wait for the sync to go through and then browse your app service and verify that you can access it.
+
+#### Deploy updates to the code
+
+Update the file `routes/index.js` and change the title:
+
+```javascript
+/* GET home page. */
+router.get('/', function (req, res, next) {
+  res.render('index', { title: 'AzureLab' });
+});
+```
+
+Now commit the changes:
+
+```shell
+git add .
+git status
+git commit -m "update terraform and title"
+git push
+```
+
+Verify that in `Deployment Center` that tha change is picked up and when you browse the site you see 
 
 # Next Lab
 
