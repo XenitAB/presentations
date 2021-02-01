@@ -122,13 +122,6 @@ Terraform is a tool for building, changing, and versioning infrastructure safely
 
 If you want to have som highlighting in the code, you can use the following VS Code extension: [4ops.terraform](https://marketplace.visualstudio.com/items?itemName=4ops.terraform) (there are others, but this one is small and easy to use)
 
-**GIT BRANCH**
-
-Create a git branch for the work you will be doing for terraform:
-
-```shell
-git checkout -b feature/initial-terraform-code
-```
 
 **VARIABLES**
 
