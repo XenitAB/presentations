@@ -414,6 +414,12 @@ Enable it using Azure CLI:
 az webapp deployment source config --resource-group rg-lab-we-webapp1 --name wa-lab-we-webapp1 --repo-url https://github.com/<org / username>/<repo name> --branch main
 ```
 
+You need to connect Azure to your GitHub account before running the above `az` command. Easiest done through the `Deployment Center` wizard. It can also be done using the following command, but then you need a git token (in our case a [GitHub PAT](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)):
+
+```shell
+az webapp deployment source update-token --git-token <GitHub PAT>
+```
+
 **VALIDATION**
 
 Wait for the sync to go through and then browse your app service and verify that you can access it.
