@@ -12,6 +12,8 @@ In this lab, terraform version `0.14.5` is used.
 
 In this lab, you will deploy a web app using Infrastructure as Code with Terraform as well as configuring the web app to use a GitHub repository for application deployment.
 
+## Lab
+
 ### Creating the repository
 
 Login to GitHub and create a new public repository. Create it on your personal account and not your organization. I called it: `simongottschlag/cloud-and-scalability-lab`
@@ -360,10 +362,10 @@ terraform apply
 cd ..
 ```
 
-Now commit the changes: (make sure you are in the root of the repository and that status shows `terraform/main.tf`)
+Now commit the changes: (make sure you are in the root of the repository and that status shows `terraform/main.tf` and `terraform/.terraform.lock.hcl`)
 
 ```shell
-git add terraform/main.tf
+git add terraform/
 git status
 git commit -m "add app service"
 git push
