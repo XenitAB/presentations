@@ -632,6 +632,13 @@ git push
 
 ### GitHub
 
+**PAT SCOPES**
+
+The following scopes will be needed for your Personal Access Token:
+
+- `repo`
+- `workflow`
+
 **EXTERNAL TERRAFORM VARIABLES**
 
 Before we begin, we will need three variables in our shell. One of them will be *secret* and needs to be handled with care (like not showing up in your cli history).
