@@ -5,6 +5,7 @@
 - Same as in LAB #01 with the addition of:
 - [GitHub Account](https://github.com/join)
 - [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+- [git](https://git-scm.com/downloads)
 
 In this lab, terraform version `0.14.5` is used.
 
