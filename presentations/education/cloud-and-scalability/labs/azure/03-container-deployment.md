@@ -12,6 +12,8 @@ In this lab, you will deploy an [Azure Web App for Containers](https://azure.mic
 
 ## Lab
 
+This lab expects you to have completed the [LAB #02](02-deployment-iac.md) before this and that you have a Node.js application in the root.
+
 ### Terraform
 
 **SCAFFOLDING**
