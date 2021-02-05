@@ -450,7 +450,7 @@ COPY app.js ./
 COPY bin ./bin
 COPY public ./public
 COPY routes ./routes
-copy views ./views
+COPY views ./views
 
 RUN apt-get update && apt-get install -y \
   tini \
