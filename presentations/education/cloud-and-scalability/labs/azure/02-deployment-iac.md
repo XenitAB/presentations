@@ -4,10 +4,10 @@
 
 - Same as in LAB #01 with the addition of:
 - [GitHub Account](https://github.com/join)
-- [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-- [git](https://git-scm.com/downloads)
+- [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) _v1.1.7_
+- [git](https://git-scm.com/downloads) _v2.35.1_
 
-In this lab, terraform version `0.14.5` is used.
+In this lab, terraform version `1.1.7` is used.
 
 ## Description
 
@@ -17,7 +17,7 @@ In this lab, you will deploy a web app using Infrastructure as Code with Terrafo
 
 ### Creating the repository
 
-Login to GitHub and create a new public repository. Create it on your personal account and not your organization. I called it: `simongottschlag/cloud-and-scalability-lab`
+Login to GitHub and create a new public repository. Create it on your personal account and not your organization. I called it: `<org>/<repo>`
 
 I added a README file when creating it, as well as a `.gitignore` with the Terraform template.
 
@@ -123,8 +123,7 @@ Be really careful when commiting and pushing to git, make sure to never **ever**
 
 Terraform is a tool for building, changing, and versioning infrastructure safely and efficiently. Terraform can manage existing and popular service providers as well as custom in-house solutions. Read more about it here: [Introduction to Terraform](https://www.terraform.io/intro/index.html)
 
-If you want to have som highlighting in the code, you can use the following VS Code extension: [4ops.terraform](https://marketplace.visualstudio.com/items?itemName=4ops.terraform) (there are others, but this one is small and easy to use)
-
+If you want to have som highlighting in the code, you can use the following VS Code extension: [HashiCorp Terraform](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform) (there are others, but this one is small and easy to use).
 
 **VARIABLES**
 
@@ -169,7 +168,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.45.1"
+      version = "2.98.0"
     }
   }
 }
@@ -205,7 +204,7 @@ Make sure all files are saved.
 
 ```shell
 az login
-az account show
+az account list -o table
 az account set --subscription "Visual Studio Enterprise"
 ```
 
@@ -219,23 +218,23 @@ terraform init
 The folder structure in terraform should now look something like this:
 
 ```terraform
+├── main.tf
+├── outputs.tf
 ├── .terraform
 │   └── providers
 │       └── registry.terraform.io
 │           └── hashicorp
 │               └── azurerm
-│                   └── 2.45.1
-│                       └── darwin_amd64
-│                           └── terraform-provider-azurerm_v2.45.1_x5
+│                   └── 2.98.0
+│                       └── linux_amd64
+│                           └── terraform-provider-azurerm_v2.98.0_x5
 ├── .terraform.lock.hcl
-├── main.tf
-├── outputs.tf
 └── variables.tf
 ```
 
 Make sure that the `.terraform` is ignored by `.gitignore`: `git check-ignore -v .terraform/*`
 
-You should see something like: `.gitignore:2:**/.terraform/*    .terraform/providers`
+You should see something like: `.gitignore:2:**/.terraform/* .terraform/providers`
 
 **PLAN**
 
@@ -248,8 +247,7 @@ terraform plan
 You should see an output like this:
 
 ```shell
-An execution plan has been generated and is shown below.
-Resource actions are indicated with the following symbols:
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
   + create
 
 Terraform will perform the following actions:
@@ -263,11 +261,7 @@ Terraform will perform the following actions:
 
 Plan: 1 to add, 0 to change, 0 to destroy.
 
-------------------------------------------------------------------------
-
-Note: You didn't specify an "-out" parameter to save this plan, so Terraform
-can't guarantee that exactly these actions will be performed if
-"terraform apply" is subsequently run.
+Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions if you run "terraform apply" now.
 ```
 
 **APPLY**
@@ -283,8 +277,7 @@ terraform apply
 You should see something like the following in the output and be asked to write `yes` (this can be skipped if you add `-auto-approve`, but be careful with that):
 
 ```shell
-An execution plan has been generated and is shown below.
-Resource actions are indicated with the following symbols:
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
   + create
 
 Terraform will perform the following actions:
@@ -302,14 +295,10 @@ Do you want to perform these actions?
   Terraform will perform the actions described above.
   Only 'yes' will be accepted to approve.
 
-  Enter a value: 
-```
+  Enter a value: yes
 
-When you've written `yes` you should see an output like this:
-
-```shell
 azurerm_resource_group.this: Creating...
-azurerm_resource_group.this: Creation complete after 1s [id=/subscriptions/<subscription_uuid>/resourceGroups/rg-lab-we-webapp1]
+azurerm_resource_group.this: Creation complete after 1s [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1]
 
 Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 ```
@@ -326,7 +315,7 @@ locals {
   app_service_plan_name = "asp-${var.environment}-${var.location}-${var.name}"
   app_service_name      = "wa-${var.environment}-${var.location}-${var.name}"
 }
-``` 
+```
 
 Create an App Service Plan and an App Service:
 
@@ -351,7 +340,7 @@ resource "azurerm_app_service" "this" {
   app_service_plan_id = azurerm_app_service_plan.this.id
 
   site_config {
-    linux_fx_version = "NODE|14-lts"
+    linux_fx_version = "NODE|16-lts"
   }
 }
 ```
@@ -363,7 +352,7 @@ terraform apply
 cd ..
 ```
 
-Now commit the changes: (make sure you are in the root of the repository and that status shows `terraform/main.tf` and `terraform/.terraform.lock.hcl`)
+Now commit the changes: (make sure you are in the root of the repository and that status shows `terraform/main.tf`, `terraform/variables.tf` and `terraform/.terraform.lock.hcl`)
 
 ```shell
 git add terraform/
@@ -372,12 +361,11 @@ git commit -m "add app service"
 git push
 ```
 
-
 **CONTINUOUS DEPLOYMENT**
 
 It is possible to point the App Service to a GitHub repository using terraform. I've had a lot of issues with the App Service completing the configuration gracefully when doing it and to save time during the lab I've chosen to enable it using the portal or Azure CLI.
 
-If you want to try (I recommend you cancelling it if nothing happens in 10 minutes), you can use the following:
+If you want to try (I recommend you cancelling it if nothing happens in 10 minutes), you modify your `azurerm_app_service` to use the following:
 
 ```terraform
 resource "azurerm_app_service" "this" {
@@ -387,7 +375,7 @@ resource "azurerm_app_service" "this" {
   app_service_plan_id = azurerm_app_service_plan.this.id
 
   site_config {
-    linux_fx_version = "NODE|14-lts"
+    linux_fx_version = "NODE|16-lts"
   }
 
   source_control {
@@ -395,12 +383,14 @@ resource "azurerm_app_service" "this" {
     branch             = "<branch>"
   }
 }
-``` 
+```
+
+_Please observe! You can't run the above right away, you first need to add a GitHub token to Azure. This would be possible using terraform and the [`azurerm_app_service_source_control_token`](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_source_control_token) resource. But since we want to keep this guide as short as possible, we'll do it using the CLI. See the command below (`update-token`)._
 
 Enable it using the Azure Portal:
 
 - Search for the App Service name (example: `wa-lab-we-webapp1`) in the top search bar
-- Press `Deployment Center` (it may say `(Classic)` now)
+- Press `Deployment Center`
 - Continuous Deployment (CI / CD) -> Select `GitHub`
 - You may have to authorize Azure Portal to access your GitHub at this stage
 - Press `Continue` at the bottom
@@ -433,8 +423,8 @@ Update the file `routes/index.js` and change the title:
 
 ```javascript
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'AzureLab' });
+router.get("/", function (req, res, next) {
+  res.render("index", { title: "AzureLab" });
 });
 ```
 
@@ -447,7 +437,7 @@ git commit -m "update title"
 git push
 ```
 
-Verify that in `Deployment Center` that tha change is picked up and when you browse the site you see `Welcome to AzureLab`. 
+Verify that in `Deployment Center` that the change is picked up and when you browse the site you see `Welcome to AzureLab`.
 
 #### Cleaning up
 
@@ -461,37 +451,38 @@ terraform destroy
 This should show an output like this:
 
 ```shell
-azurerm_resource_group.this: Refreshing state... [id=/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1]
-azurerm_app_service_plan.this: Refreshing state... [id=/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1]
-azurerm_app_service.this: Refreshing state... [id=/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1]
+azurerm_resource_group.this: Refreshing state... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1]
+azurerm_app_service_plan.this: Refreshing state... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1]
+azurerm_app_service.this: Refreshing state... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1]
 
-An execution plan has been generated and is shown below.
-Resource actions are indicated with the following symbols:
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
   - destroy
 
 Terraform will perform the following actions:
 
   # azurerm_app_service.this will be destroyed
   - resource "azurerm_app_service" "this" {
-      - app_service_plan_id               = "/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
+      - app_service_plan_id               = "/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
       - app_settings                      = {} -> null
       - client_affinity_enabled           = false -> null
       - client_cert_enabled               = false -> null
-      - custom_domain_verification_id     = "***" -> null
+      - client_cert_mode                  = "Required" -> null
+      - custom_domain_verification_id     = "938A8148CC9107C5E73645A20FFC9F3EED3F46ADDDADDE4AF75CA009F4CBC22E" -> null
       - default_site_hostname             = "wa-lab-we-webapp1.azurewebsites.net" -> null
       - enabled                           = true -> null
       - https_only                        = false -> null
-      - id                                = "/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1" -> null
+      - id                                = "/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1" -> null
+      - key_vault_reference_identity_id   = "SystemAssigned" -> null
       - location                          = "westeurope" -> null
       - name                              = "wa-lab-we-webapp1" -> null
       - outbound_ip_address_list          = [
-          - "[...]",
+          - "<truncated>"
         ] -> null
-      - outbound_ip_addresses             = "[...]" -> null
+      - outbound_ip_addresses             = "<truncated>" -> null
       - possible_outbound_ip_address_list = [
-          - "[...]",
+          - "<truncated>"
         ] -> null
-      - possible_outbound_ip_addresses    = "[...]" -> null
+      - possible_outbound_ip_addresses    = "<truncated>" -> null
       - resource_group_name               = "rg-lab-we-webapp1" -> null
       - site_credential                   = [
           - {
@@ -522,24 +513,26 @@ Terraform will perform the following actions:
         }
 
       - site_config {
-          - always_on                   = false -> null
-          - default_documents           = [] -> null
-          - dotnet_framework_version    = "v4.0" -> null
-          - ftps_state                  = "AllAllowed" -> null
-          - http2_enabled               = false -> null
-          - ip_restriction              = [] -> null
-          - linux_fx_version            = "NODE|14-lts" -> null
-          - local_mysql_enabled         = false -> null
-          - managed_pipeline_mode       = "Integrated" -> null
-          - min_tls_version             = "1.2" -> null
-          - number_of_workers           = 1 -> null
-          - remote_debugging_enabled    = false -> null
-          - remote_debugging_version    = "VS2019" -> null
-          - scm_ip_restriction          = [] -> null
-          - scm_type                    = "GitHub" -> null
-          - scm_use_main_ip_restriction = false -> null
-          - use_32_bit_worker_process   = false -> null
-          - websockets_enabled          = false -> null
+          - acr_use_managed_identity_credentials = false -> null
+          - always_on                            = false -> null
+          - default_documents                    = [] -> null
+          - dotnet_framework_version             = "v4.0" -> null
+          - ftps_state                           = "AllAllowed" -> null
+          - http2_enabled                        = false -> null
+          - ip_restriction                       = [] -> null
+          - linux_fx_version                     = "NODE|16-lts" -> null
+          - local_mysql_enabled                  = false -> null
+          - managed_pipeline_mode                = "Integrated" -> null
+          - min_tls_version                      = "1.2" -> null
+          - number_of_workers                    = 1 -> null
+          - remote_debugging_enabled             = false -> null
+          - remote_debugging_version             = "VS2019" -> null
+          - scm_ip_restriction                   = [] -> null
+          - scm_type                             = "GitHub" -> null
+          - scm_use_main_ip_restriction          = false -> null
+          - use_32_bit_worker_process            = false -> null
+          - vnet_route_all_enabled               = false -> null
+          - websockets_enabled                   = false -> null
 
           - cors {
               - allowed_origins     = [] -> null
@@ -550,7 +543,7 @@ Terraform will perform the following actions:
       - source_control {
           - branch             = "main" -> null
           - manual_integration = false -> null
-          - repo_url           = "https://github.com/<org / username>/<repo name>" -> null
+          - repo_url           = "https://github.com/<org>/<repo>" -> null
           - rollback_enabled   = false -> null
           - use_mercurial      = false -> null
         }
@@ -558,17 +551,18 @@ Terraform will perform the following actions:
 
   # azurerm_app_service_plan.this will be destroyed
   - resource "azurerm_app_service_plan" "this" {
-      - id                           = "/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
+      - id                           = "/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
       - is_xenon                     = false -> null
       - kind                         = "linux" -> null
       - location                     = "westeurope" -> null
       - maximum_elastic_worker_count = 1 -> null
-      - maximum_number_of_workers    = 10 -> null
+      - maximum_number_of_workers    = 3 -> null
       - name                         = "asp-lab-we-webapp1" -> null
       - per_site_scaling             = false -> null
       - reserved                     = true -> null
       - resource_group_name          = "rg-lab-we-webapp1" -> null
       - tags                         = {} -> null
+      - zone_redundant               = false -> null
 
       - sku {
           - capacity = 1 -> null
@@ -579,13 +573,29 @@ Terraform will perform the following actions:
 
   # azurerm_resource_group.this will be destroyed
   - resource "azurerm_resource_group" "this" {
-      - id       = "/subscriptions/<subscription>/resourceGroups/rg-lab-we-webapp1" -> null
+      - id       = "/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1" -> null
       - location = "westeurope" -> null
       - name     = "rg-lab-we-webapp1" -> null
       - tags     = {} -> null
     }
 
 Plan: 0 to add, 0 to change, 3 to destroy.
+
+Do you really want to destroy all resources?
+  Terraform will destroy all your managed infrastructure, as shown above.
+  There is no undo. Only 'yes' will be accepted to confirm.
+
+  Enter a value: yes
+
+azurerm_app_service.this: Destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1]
+azurerm_app_service.this: Destruction complete after 9s
+azurerm_app_service_plan.this: Destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1]
+azurerm_app_service_plan.this: Destruction complete after 7s
+azurerm_resource_group.this: Destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1]
+azurerm_resource_group.this: Still destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1, 10s elapsed]
+azurerm_resource_group.this: Destruction complete after 16s
+
+Destroy complete! Resources: 3 destroyed.
 ```
 
 Please, always check and double check the output before you write `yes`. It won't be the first time someone deletes too much using this command.

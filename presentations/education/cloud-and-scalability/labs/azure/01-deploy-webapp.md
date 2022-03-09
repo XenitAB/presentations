@@ -4,11 +4,11 @@
 
 - [Internet](https://en.wikipedia.org/wiki/Internet)
 - [Azure Subscription](https://azure.microsoft.com/en-us/free/)
-- [Visual Studio Code](https://code.visualstudio.com/)
-  - [Azure App Service for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice)
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-- [Node.js 14](https://nodejs.org/en/)
-- [npm](https://www.npmjs.com/get-npm)
+- [Visual Studio Code](https://code.visualstudio.com/) _v1.63.2_
+  - [Azure App Service for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) _v0.23.1_
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) _v2.34.1_
+- [Node.js 16](https://nodejs.org/en/) _v16.14.0_
+- [npm](https://www.npmjs.com/get-npm) _v8.3.1_
 
 ## Description
 
@@ -26,11 +26,11 @@ Go to [portal.azure.com](https://portal.azure.com) and login using an account th
 
 ```shell
 az login
-az account show
+az account list -o table
 az account set --subscription "Visual Studio Enterprise" # Note that your subscription could have another name. You can use it's ID (UUID) instead as well.
 ```
 
-When writing this, I am using azure-cli version `2.16.0`.
+When writing this, I am using azure-cli version `2.34.1`.
 
 **NOTES**
 
@@ -44,7 +44,7 @@ When writing this, I am using azure-cli version `2.16.0`.
 
 **INFO**
 
-A resource group is a container that holds related resources for an Azure solution. The resource group can include all the resources for the solution, or only those resources that you want to manage as a group. 
+A resource group is a container that holds related resources for an Azure solution. The resource group can include all the resources for the solution, or only those resources that you want to manage as a group.
 
 More info: [Manage Azure Resource Manager resource groups by using the Azure portal](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal)
 
@@ -53,6 +53,7 @@ More info: [Manage Azure Resource Manager resource groups by using the Azure por
 The first thing we need to do is create an `Azure Resource Group`. The easiest way to do it is to search for `Resource groups` in the search bar at the top of the page.
 
 Press `+ Create` in the top left corner and then:
+
 - Subscription: `Visual Studio Enterprise`
 - Resource group: `rg-lab-we-webapp1`
 - Region: `(Europe) West Europe`
@@ -90,9 +91,10 @@ More info: [Azure App Service plan overview](https://docs.microsoft.com/en-us/az
 Search for `App Service plan` in the top search bar.
 
 Press `+ Create` in the left corner and then:
+
 - Project Details > Subscription: `Visual Studio Enterprise`
 - Project Details > Resource group: `rg-lab-we-webapp1`
-- App Service Plan details > Name: `asp-lab-we-webapp1` 
+- App Service Plan details > Name: `asp-lab-we-webapp1`
 - App Service Plan details > Operating System: \[v\] `Linux`
 - App Service Plan details > Region: `West Europe`
 - Pricing Tier > Sku and size: `Dev / Test` > `B1`
@@ -126,23 +128,30 @@ More info: [App Service overview](https://docs.microsoft.com/en-us/azure/app-ser
 Search for `App Services` in the top search bar.
 
 Press `+ Create` in the left corner and then:
+
 - Project Details > Subscription: `Visual Studio Enterprise`
 - Project Details > Resource group: `rg-lab-we-webapp1`
 - Instance Details > Name: `wa-lab-we-webapp1`
 - Instance Details > Publish: \[v\] `Code`
-- Instance Details > Runtime stack: `Node 14 LTS (Early Access)`
+- Instance Details > Runtime stack: `Node 16 LTS`
 - Instance Details > Operating System: \[v\] `Linux`
 - Instance Details > Region: `West Europe`
 - App Service Plan > Linux Plan (West Europe): `asp-lab-we-webapp1`
-- App Service Plan > Sku and size: `Basic B1` 
+- App Service Plan > Sku and size: `Basic B1`
 
 Press `Review + create` and then `Create`.
 
 **CLI**
 
 ```shell
-az webapp create --plan asp-lab-we-webapp2 --resource-group rg-lab-we-webapp2 --runtime "NODE|14-lts" --name wa-lab-we-webapp2
+az webapp create --plan asp-lab-we-webapp1 --resource-group rg-lab-we-webapp1 --runtime "NODE|16-lts" --name wa-lab-we-webapp1
 ```
+
+> If you are running an older version of `azure-cli` (before v2.34.0), then you need to define `--runtime "NODE|14-lts"` in the above command and then, after it's created, run:
+>
+> ```shell
+> az webapp config set --resource-group rg-lab-we-webapp1 --name wa-lab-we-webapp1 --linux-fx-version "NODE|16-lts"
+> ```
 
 **NOTES**
 
@@ -151,7 +160,7 @@ az webapp create --plan asp-lab-we-webapp2 --resource-group rg-lab-we-webapp2 --
 - If you want to find the URL using the CLI, you can run:
   - Raw JSON: `az webapp show --resource-group rg-lab-we-webapp1 --name wa-lab-we-webapp1` (look for `defaultHostName`)
   - Only hostname: `az webapp show --resource-group rg-lab-we-webapp1 --name wa-lab-we-webapp1 --query defaultHostName --output tsv`
-  -  Launch web browser from CLI: `az webapp browse --resource-group rg-lab-we-webapp1 --name wa-lab-we-webapp1`
+  - Launch web browser from CLI: `az webapp browse --resource-group rg-lab-we-webapp1 --name wa-lab-we-webapp1`
 - Abbreviations:
 
 | Short name | Description                 |
@@ -170,12 +179,12 @@ More info: [Create a Node.js web app in Azure](https://docs.microsoft.com/en-us/
 
 Make sure you have the following installed:
 
-- [Visual Studio Code](https://code.visualstudio.com/)
-  - [Azure App Service for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice)
-- [Node.js 14](https://nodejs.org/en/)
-- [npm](https://www.npmjs.com/get-npm)
- 
-As of writing this, I am using Node.js version `v14.15.4` and npm version `6.14.10`.
+- [Visual Studio Code](https://code.visualstudio.com/) _v1.63.2_
+  - [Azure App Service for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) _v0.23.1_
+- [Node.js 16](https://nodejs.org/en/) _v16.14.0_
+- [npm](https://www.npmjs.com/get-npm) _v8.3.1_
+
+As of writing this, I am using Node.js version `v16.14.0` and npm version `8.3.1`.
 
 In VS Code, go to the `Azure App Services` extension and login to your Azure Subscription. Make sure you see your App Service in the extension.
 
@@ -198,13 +207,15 @@ When you have verified that you can browse it locally, press `CTRL+C` to stop th
 
 From the directory your application is located, start VS Code: `code .` (if this doesn't work, open it using the VS Code menus)
 
-Go to the `Azure App Services` extension and right click your App Service and choose `Deploy to Web App...` and choose your directory. 
+Go to the `Azure App Services` extension and right click your App Service and choose `Deploy to Web App...` and choose your directory.
 
 If you get a question like "Would you like to update your workspace configuration to run build commands on the target server? This should improve deployment performance.", press `Yes`.
 
 When you are asked "Are you sure you want to deploy ...", verify the name of the web app that it's the one you created and then press `Deploy`. You can no check the output window and see the progress.
 
 Wait until it says Deployment successful and then click `Browse Website`.
+
+You can click on the `output window` in the pop-up in the bottom right corner to see exactly what is happening.
 
 **NOTES**
 
