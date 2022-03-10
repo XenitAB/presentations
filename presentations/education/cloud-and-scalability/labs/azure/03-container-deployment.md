@@ -1,10 +1,10 @@
 # TASK #03 - Deploy a container
 
 - Same as in LAB #01 & LAB #02 with the addition of:
-- [Docker](https://docs.docker.com/get-docker/)
+- [Docker](https://docs.docker.com/get-docker/) _v20.10.12_
 - [Personal Access Token (PAT) for GitHub](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
-In this lab, Docker version `20.10.2` is used.
+In this lab, Docker version `20.10.12` is used.
 
 ## Description
 
@@ -83,7 +83,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.45.1"
+      version = "2.98.0"
     }
   }
 }
@@ -158,7 +158,7 @@ resource "azurerm_container_registry" "this" {
 }
 
 resource "azurerm_container_registry_webhook" "this" {
-  name                = "webapp${replace(azurerm_app_service.this.name, "-", "")}"
+  name                = "webhook${replace(azurerm_app_service.this.name, "-", "")}"
   registry_name       = azurerm_container_registry.this.name
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
@@ -190,8 +190,7 @@ terraform plan
 There should now be an output with something like this:
 
 ```shell
-An execution plan has been generated and is shown below.
-Resource actions are indicated with the following symbols:
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
   + create
 
 Terraform will perform the following actions:
@@ -202,11 +201,13 @@ Terraform will perform the following actions:
       + app_settings                      = (known after apply)
       + client_affinity_enabled           = false
       + client_cert_enabled               = false
+      + client_cert_mode                  = (known after apply)
       + custom_domain_verification_id     = (known after apply)
       + default_site_hostname             = (known after apply)
       + enabled                           = true
       + https_only                        = false
       + id                                = (known after apply)
+      + key_vault_reference_identity_id   = (known after apply)
       + location                          = "westeurope"
       + name                              = "wa-lab-we-webapp1"
       + outbound_ip_address_list          = (known after apply)
@@ -297,23 +298,25 @@ Terraform will perform the following actions:
         }
 
       + site_config {
-          + always_on                   = false
-          + dotnet_framework_version    = "v4.0"
-          + ftps_state                  = (known after apply)
-          + http2_enabled               = false
-          + ip_restriction              = (known after apply)
-          + linux_fx_version            = (known after apply)
-          + local_mysql_enabled         = (known after apply)
-          + managed_pipeline_mode       = (known after apply)
-          + min_tls_version             = (known after apply)
-          + number_of_workers           = (known after apply)
-          + remote_debugging_enabled    = false
-          + remote_debugging_version    = (known after apply)
-          + scm_ip_restriction          = (known after apply)
-          + scm_type                    = (known after apply)
-          + scm_use_main_ip_restriction = false
-          + websockets_enabled          = (known after apply)
-          + windows_fx_version          = (known after apply)
+          + acr_use_managed_identity_credentials = false
+          + always_on                            = false
+          + dotnet_framework_version             = "v4.0"
+          + ftps_state                           = (known after apply)
+          + http2_enabled                        = false
+          + ip_restriction                       = (known after apply)
+          + linux_fx_version                     = (known after apply)
+          + local_mysql_enabled                  = (known after apply)
+          + managed_pipeline_mode                = (known after apply)
+          + min_tls_version                      = (known after apply)
+          + number_of_workers                    = (known after apply)
+          + remote_debugging_enabled             = false
+          + remote_debugging_version             = (known after apply)
+          + scm_ip_restriction                   = (known after apply)
+          + scm_type                             = (known after apply)
+          + scm_use_main_ip_restriction          = false
+          + vnet_route_all_enabled               = (known after apply)
+          + websockets_enabled                   = (known after apply)
+          + windows_fx_version                   = (known after apply)
 
           + cors {
               + allowed_origins     = (known after apply)
@@ -359,18 +362,25 @@ Terraform will perform the following actions:
 
   # azurerm_container_registry.this will be created
   + resource "azurerm_container_registry" "this" {
-      + admin_enabled       = true
-      + admin_password      = (sensitive value)
-      + admin_username      = (known after apply)
-      + id                  = (known after apply)
-      + location            = "westeurope"
-      + login_server        = (known after apply)
-      + name                = "acrlabwewebapp1"
-      + network_rule_set    = (known after apply)
-      + resource_group_name = "rg-lab-we-webapp1"
-      + retention_policy    = (known after apply)
-      + sku                 = "Basic"
-      + trust_policy        = (known after apply)
+      + admin_enabled                 = true
+      + admin_password                = (sensitive value)
+      + admin_username                = (known after apply)
+      + encryption                    = (known after apply)
+      + georeplication_locations      = (known after apply)
+      + georeplications               = (known after apply)
+      + id                            = (known after apply)
+      + location                      = "westeurope"
+      + login_server                  = (known after apply)
+      + name                          = "acrlabwewebapp1"
+      + network_rule_bypass_option    = "AzureServices"
+      + network_rule_set              = (known after apply)
+      + public_network_access_enabled = true
+      + resource_group_name           = "rg-lab-we-webapp1"
+      + retention_policy              = (known after apply)
+      + sku                           = "Basic"
+      + storage_account_id            = (known after apply)
+      + trust_policy                  = (known after apply)
+      + zone_redundancy_enabled       = false
     }
 
   # azurerm_container_registry_webhook.this will be created
@@ -380,7 +390,7 @@ Terraform will perform the following actions:
         ]
       + id                  = (known after apply)
       + location            = "westeurope"
-      + name                = "webappwalabwewebapp1"
+      + name                = "webhookwalabwewebapp1"
       + registry_name       = "acrlabwewebapp1"
       + resource_group_name = "rg-lab-we-webapp1"
       + scope               = "azure-lab:latest"
@@ -397,11 +407,7 @@ Terraform will perform the following actions:
 
 Plan: 5 to add, 0 to change, 0 to destroy.
 
-------------------------------------------------------------------------
-
-Note: You didn't specify an "-out" parameter to save this plan, so Terraform
-can't guarantee that exactly these actions will be performed if
-"terraform apply" is subsequently run.
+Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions if you run "terraform apply" now.
 ```
 
 If everything goes through, run `terraform apply`.
@@ -413,7 +419,7 @@ Go to the Azure Portal and in the top search bar, search for your resource group
 - Container registry: `acrlabwewebapp1`
 - App Service plan: `asp-lab-we-webapp1`
 - App Service: `wa-lab-we-webapp1`
-- Container registry webhook: `webappwalabwewebapp1 (acrlabwewebapp1/webappwalabwewebapp1)`
+- Container registry webhook: `webhookwalabwewebapp1 (acrlabwewebapp1/webhookwalabwewebapp1)`
 
 The webhook name is a little weird, but that's how they are created by the Azure Portal if done manually so keeping to it - not actually sure it is required. Better safe than sorry.
 
@@ -466,7 +472,6 @@ CMD [ "node", "./bin/www" ]
 
 You can read more about it here: [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 
-
 **BUILDING CONTAINER**
 
 Now run the following to build the container:
@@ -480,67 +485,75 @@ Make sure to change the name (before `.azurecr.io`) from `acrlabwewebapp1` to th
 You should see an output like this:
 
 ```shell
-Sending build context to Docker daemon  438.7MB
+Sending build context to Docker daemon  356.5MB
 Step 1/15 : FROM node:lts-buster-slim
- ---> e61ac77a3eed
+lts-buster-slim: Pulling from library/node
+15115158dd02: Pull complete
+0a3670bd8e93: Pull complete
+59583c507ad2: Pull complete
+c56d959776a3: Pull complete
+579e31ff2961: Pull complete
+Digest: sha256:3f34fa94510e16bf619fefb53c9c5d2b11ead626863bdb6b26b49d38d1b56db8
+Status: Downloaded newer image for node:lts-buster-slim
+ ---> dc3b2ce4c6a8
 Step 2/15 : ARG NODE_ENV=production
- ---> Running in 8ec140906cab
-Removing intermediate container 8ec140906cab
- ---> f6243edb7291
+ ---> Running in ee16ded385ec
+Removing intermediate container ee16ded385ec
+ ---> abb014482642
 Step 3/15 : ENV NODE_ENV=$NODE_ENV
- ---> Running in 8e1b9851b832
-Removing intermediate container 8e1b9851b832
- ---> 1930d902430a
+ ---> Running in 462259309fa8
+Removing intermediate container 462259309fa8
+ ---> c731fdb82bf4
 Step 4/15 : WORKDIR /usr/src/app
- ---> Running in 3ff46ecab42d
-Removing intermediate container 3ff46ecab42d
- ---> ede6255c6bf5
+ ---> Running in 3f2c0e00c226
+Removing intermediate container 3f2c0e00c226
+ ---> a548971a1e0e
 Step 5/15 : COPY package*.json ./
- ---> 6dd443c4d120
+ ---> bac957a73542
 Step 6/15 : RUN npm install
- ---> Running in 4a211dd006af
-npm WARN deprecated core-js@2.6.12: core-js@<3 is no longer maintained and not recommended for usage due to the number of issues. Please, upgrade your dependencies to the actual version of core-js@3.
+ ---> Running in a8968683bf84
+npm WARN deprecated core-js@2.6.12: core-js@<3.4 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
 
-> core-js@2.6.12 postinstall /usr/src/app/node_modules/core-js
-> node -e "try{require('./postinstall')}catch(e){}"
+added 124 packages, and audited 125 packages in 7s
 
-Thank you for using core-js ( https://github.com/zloirock/core-js ) for polyfilling JavaScript standard library!
-
-The project needs your help! Please consider supporting of core-js on Open Collective or Patreon: 
-> https://opencollective.com/core-js 
-> https://www.patreon.com/zloirock 
-
-Also, the author of core-js ( https://github.com/zloirock ) is looking for a good job -)
-
-npm notice created a lockfile as package-lock.json. You should commit this file.
-added 123 packages from 175 contributors and audited 124 packages in 4.166s
-
-6 packages are looking for funding
+8 packages are looking for funding
   run `npm fund` for details
 
-found 1 low severity vulnerability
-  run `npm audit fix` to fix them, or `npm audit` for details
-Removing intermediate container 4a211dd006af
- ---> 23a2e673db66
+4 vulnerabilities (2 low, 2 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues, run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm notice
+npm notice New minor version of npm available! 8.3.1 -> 8.5.3
+npm notice Changelog: <https://github.com/npm/cli/releases/tag/v8.5.3>
+npm notice Run `npm install -g npm@8.5.3` to update!
+npm notice
+Removing intermediate container a8968683bf84
+ ---> 0a74d73c2c9b
 Step 7/15 : COPY app.js ./
- ---> d593471e675c
+ ---> 23596abed405
 Step 8/15 : COPY bin ./bin
- ---> d87ea9164e36
+ ---> 427421dae89c
 Step 9/15 : COPY public ./public
- ---> 1f227712c822
+ ---> d804da5899b5
 Step 10/15 : COPY routes ./routes
- ---> 7b5f4fdf9691
-Step 11/15 : copy views ./views
- ---> eb3a66419d1a
+ ---> f8f4db893e44
+Step 11/15 : COPY views ./views
+ ---> 971dfaa76b5e
 Step 12/15 : RUN apt-get update && apt-get install -y   tini   && rm -rf /var/lib/apt/lists/*
- ---> Running in 4a3d80ca73ae
+ ---> Running in 4b7d09139d7d
 Get:1 http://security.debian.org/debian-security buster/updates InRelease [65.4 kB]
-Get:2 http://deb.debian.org/debian buster InRelease [121 kB]
+Get:2 http://deb.debian.org/debian buster InRelease [122 kB]
 Get:3 http://deb.debian.org/debian buster-updates InRelease [51.9 kB]
-Get:4 http://security.debian.org/debian-security buster/updates/main amd64 Packages [266 kB]
-Get:5 http://deb.debian.org/debian buster/main amd64 Packages [7907 kB]
-Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [7848 B]
-Fetched 8420 kB in 5s (1746 kB/s)
+Get:4 http://security.debian.org/debian-security buster/updates/main amd64 Packages [317 kB]
+Get:5 http://deb.debian.org/debian buster/main amd64 Packages [7906 kB]
+Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [8792 B]
+Fetched 8471 kB in 1s (6278 kB/s)
 Reading package lists...
 Reading package lists...
 Building dependency tree...
@@ -550,32 +563,32 @@ The following package was automatically installed and is no longer required:
 Use 'apt autoremove' to remove it.
 The following NEW packages will be installed:
   tini
-0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
 Need to get 247 kB of archives.
 After this operation, 731 kB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian buster/main amd64 tini amd64 0.18.0-1 [247 kB]
 debconf: delaying package configuration, since apt-utils is not installed
-Fetched 247 kB in 0s (1902 kB/s)
+Fetched 247 kB in 0s (2928 kB/s)
 Selecting previously unselected package tini.
 (Reading database ... 6469 files and directories currently installed.)
 Preparing to unpack .../tini_0.18.0-1_amd64.deb ...
 Unpacking tini (0.18.0-1) ...
 Setting up tini (0.18.0-1) ...
-Removing intermediate container 4a3d80ca73ae
- ---> df6e2732c418
+Removing intermediate container 4b7d09139d7d
+ ---> 52b5198e8a56
 Step 13/15 : USER node
- ---> Running in 957a1ab79f92
-Removing intermediate container 957a1ab79f92
- ---> 2499ea7c3010
+ ---> Running in 51d5a7d33aea
+Removing intermediate container 51d5a7d33aea
+ ---> e8568d478407
 Step 14/15 : ENTRYPOINT ["/usr/bin/tini", "--"]
- ---> Running in 09a47afc41ee
-Removing intermediate container 09a47afc41ee
- ---> da9e0af81994
+ ---> Running in 613467af7360
+Removing intermediate container 613467af7360
+ ---> a0528d8cb771
 Step 15/15 : CMD [ "node", "./bin/www" ]
- ---> Running in 04fda811bee5
-Removing intermediate container 04fda811bee5
- ---> f62898fe38db
-Successfully built f62898fe38db
+ ---> Running in 8bf69b913e3d
+Removing intermediate container 8bf69b913e3d
+ ---> be832b2edce0
+Successfully built be832b2edce0
 Successfully tagged acrlabwewebapp1.azurecr.io/azure-lab:latest
 ```
 
@@ -641,7 +654,7 @@ The following scopes will be needed for your Personal Access Token:
 
 **EXTERNAL TERRAFORM VARIABLES**
 
-Before we begin, we will need three variables in our shell. One of them will be *secret* and needs to be handled with care (like not showing up in your cli history).
+Before we begin, we will need three variables in our shell. One of them will be _secret_ and needs to be handled with care (like not showing up in your cli history).
 
 You can read secrets without them showing up in the history using:
 
@@ -722,13 +735,13 @@ terraform {
     }
     github = {
       source  = "integrations/github"
-      version = "4.3.0"
+      version = "4.20.1"
     }
   }
 }
 ```
 
-Then we need to tell the GitHub provider what username and PAT to use, by adding this to the file `terraform-container/main.tf`: (add it under the `provider "azurerm"` block)
+Then we need to tell the GitHub provider what username and PAT to use, by adding this to the file `terraform-container/main.tf`: (add it below the `provider "azurerm"` block)
 
 ```terraform
 provider "github" {
@@ -774,7 +787,6 @@ terraform plan
 terraform apply
 cd ..
 ```
-
 
 When you have applied this, go to your GitHub repository (using your browser) and go to `Settings` -> `Secrets` and verify that you see the following:
 
@@ -851,8 +863,8 @@ Update the file `routes/index.js` and change the title:
 
 ```javascript
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'AzureContainerLab' });
+router.get("/", function (req, res, next) {
+  res.render("index", { title: "AzureContainerLab" });
 });
 ```
 
