@@ -4,10 +4,10 @@
 
 - Same as in LAB #01 with the addition of:
 - [GitHub Account](https://github.com/join)
-- [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) _v1.1.7_
-- [git](https://git-scm.com/downloads) _v2.35.1_
+- [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) _v1.3.1_
+- [git](https://git-scm.com/downloads) _v2.37.3_
 
-In this lab, terraform version `1.1.7` is used.
+In this lab, terraform version `1.3.1` is used.
 
 ## Description
 
@@ -64,6 +64,8 @@ Create the scaffolding for node:
 ```shell
 npx express-generator . --view pug
 ```
+
+You may be asked `destination is not empty, continue? [y/N]?`, write `y` and press `ENTER`.
 
 Good to know: If you place your node code in a sub-directory, you need to configure a lot more to get it working out-of-the box. More info [here](https://github.com/projectkudu/kudu/wiki/Customizing-deployments).
 
@@ -168,7 +170,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.98.0"
+      version = "3.25.0"
     }
   }
 }
@@ -225,9 +227,9 @@ The folder structure in terraform should now look something like this:
 │       └── registry.terraform.io
 │           └── hashicorp
 │               └── azurerm
-│                   └── 2.98.0
+│                   └── 3.25.0
 │                       └── linux_amd64
-│                           └── terraform-provider-azurerm_v2.98.0_x5
+│                           └── terraform-provider-azurerm_v3.25.0_x5
 ├── .terraform.lock.hcl
 └── variables.tf
 ```
