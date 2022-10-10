@@ -1,10 +1,10 @@
 # TASK #03 - Deploy a container
 
 - Same as in LAB #01 & LAB #02 with the addition of:
-- [Docker](https://docs.docker.com/get-docker/) _v20.10.12_
+- [Docker](https://docs.docker.com/get-docker/) _v20.10.17_
 - [Personal Access Token (PAT) for GitHub](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
 
-In this lab, Docker version `20.10.12` is used.
+In this lab, Docker version `20.10.17` is used.
 
 ## Description
 
@@ -83,7 +83,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.98.0"
+      version = "3.25.0"
     }
   }
 }
@@ -104,28 +104,25 @@ resource "azurerm_resource_group" "this" {
   location = var.location_long
 }
 
-resource "azurerm_app_service_plan" "this" {
+resource "azurerm_service_plan" "this" {
   name                = local.app_service_plan_name
-  location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
-  kind                = "Linux"
-  reserved            = true
-
-  sku {
-    tier = "Basic"
-    size = "B1"
-  }
+  location            = azurerm_resource_group.this.location
+  os_type             = "Linux"
+  sku_name            = "B1"
 }
 
-resource "azurerm_app_service" "this" {
+resource "azurerm_linux_web_app" "this" {
   name                = local.app_service_name
-  location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
-  app_service_plan_id = azurerm_app_service_plan.this.id
+  location            = azurerm_resource_group.this.location
+  service_plan_id     = azurerm_service_plan.this.id
 
   site_config {
-    app_command_line = ""
-    linux_fx_version = "DOCKER|${azurerm_container_registry.this.login_server}/${var.container_name}:latest"
+    application_stack {
+      docker_image     = "${azurerm_container_registry.this.login_server}/${var.container_name}"
+      docker_image_tag = "latest"
+    }
   }
 
   identity {
@@ -137,14 +134,14 @@ resource "azurerm_app_service" "this" {
     "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.this.login_server}"
     "DOCKER_REGISTRY_SERVER_USERNAME"     = azurerm_container_registry.this.admin_username
     "DOCKER_REGISTRY_SERVER_PASSWORD"     = azurerm_container_registry.this.admin_password
-    "DOCKER_ENABLE_CI"                    = "TRUE"
+    "DOCKER_ENABLE_CI"                    = "true"
     "WEBSITES_PORT"                       = "8080"
     "PORT"                                = "8080"
   }
 
   lifecycle {
     ignore_changes = [
-      site_config[0].linux_fx_version,
+      site_config[0].application_stack[0].docker_image_tag,
     ]
   }
 }
@@ -158,12 +155,12 @@ resource "azurerm_container_registry" "this" {
 }
 
 resource "azurerm_container_registry_webhook" "this" {
-  name                = "webhook${replace(azurerm_app_service.this.name, "-", "")}"
+  name                = "webhook${replace(azurerm_linux_web_app.this.name, "-", "")}"
   registry_name       = azurerm_container_registry.this.name
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
 
-  service_uri = "https://${azurerm_app_service.this.site_credential[0].username}:${azurerm_app_service.this.site_credential[0].password}@${azurerm_app_service.this.name}.scm.azurewebsites.net/docker/hook"
+  service_uri = "https://${azurerm_linux_web_app.this.site_credential[0].name}:${azurerm_linux_web_app.this.site_credential[0].password}@${azurerm_linux_web_app.this.name}.scm.azurewebsites.net/docker/hook"
   status      = "enabled"
   scope       = "${var.container_name}:latest"
   actions     = ["push"]
@@ -190,175 +187,11 @@ terraform plan
 There should now be an output with something like this:
 
 ```shell
-Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the
+following symbols:
   + create
 
 Terraform will perform the following actions:
-
-  # azurerm_app_service.this will be created
-  + resource "azurerm_app_service" "this" {
-      + app_service_plan_id               = (known after apply)
-      + app_settings                      = (known after apply)
-      + client_affinity_enabled           = false
-      + client_cert_enabled               = false
-      + client_cert_mode                  = (known after apply)
-      + custom_domain_verification_id     = (known after apply)
-      + default_site_hostname             = (known after apply)
-      + enabled                           = true
-      + https_only                        = false
-      + id                                = (known after apply)
-      + key_vault_reference_identity_id   = (known after apply)
-      + location                          = "westeurope"
-      + name                              = "wa-lab-we-webapp1"
-      + outbound_ip_address_list          = (known after apply)
-      + outbound_ip_addresses             = (known after apply)
-      + possible_outbound_ip_address_list = (known after apply)
-      + possible_outbound_ip_addresses    = (known after apply)
-      + resource_group_name               = "rg-lab-we-webapp1"
-      + site_credential                   = (known after apply)
-
-      + auth_settings {
-          + additional_login_params        = (known after apply)
-          + allowed_external_redirect_urls = (known after apply)
-          + default_provider               = (known after apply)
-          + enabled                        = (known after apply)
-          + issuer                         = (known after apply)
-          + runtime_version                = (known after apply)
-          + token_refresh_extension_hours  = (known after apply)
-          + token_store_enabled            = (known after apply)
-          + unauthenticated_client_action  = (known after apply)
-
-          + active_directory {
-              + allowed_audiences = (known after apply)
-              + client_id         = (known after apply)
-              + client_secret     = (sensitive value)
-            }
-
-          + facebook {
-              + app_id       = (known after apply)
-              + app_secret   = (sensitive value)
-              + oauth_scopes = (known after apply)
-            }
-
-          + google {
-              + client_id     = (known after apply)
-              + client_secret = (sensitive value)
-              + oauth_scopes  = (known after apply)
-            }
-
-          + microsoft {
-              + client_id     = (known after apply)
-              + client_secret = (sensitive value)
-              + oauth_scopes  = (known after apply)
-            }
-
-          + twitter {
-              + consumer_key    = (known after apply)
-              + consumer_secret = (sensitive value)
-            }
-        }
-
-      + connection_string {
-          + name  = (known after apply)
-          + type  = (known after apply)
-          + value = (sensitive value)
-        }
-
-      + identity {
-          + principal_id = (known after apply)
-          + tenant_id    = (known after apply)
-          + type         = "SystemAssigned"
-        }
-
-      + logs {
-          + detailed_error_messages_enabled = (known after apply)
-          + failed_request_tracing_enabled  = (known after apply)
-
-          + application_logs {
-              + file_system_level = (known after apply)
-
-              + azure_blob_storage {
-                  + level             = (known after apply)
-                  + retention_in_days = (known after apply)
-                  + sas_url           = (sensitive value)
-                }
-            }
-
-          + http_logs {
-              + azure_blob_storage {
-                  + retention_in_days = (known after apply)
-                  + sas_url           = (sensitive value)
-                }
-
-              + file_system {
-                  + retention_in_days = (known after apply)
-                  + retention_in_mb   = (known after apply)
-                }
-            }
-        }
-
-      + site_config {
-          + acr_use_managed_identity_credentials = false
-          + always_on                            = false
-          + dotnet_framework_version             = "v4.0"
-          + ftps_state                           = (known after apply)
-          + http2_enabled                        = false
-          + ip_restriction                       = (known after apply)
-          + linux_fx_version                     = (known after apply)
-          + local_mysql_enabled                  = (known after apply)
-          + managed_pipeline_mode                = (known after apply)
-          + min_tls_version                      = (known after apply)
-          + number_of_workers                    = (known after apply)
-          + remote_debugging_enabled             = false
-          + remote_debugging_version             = (known after apply)
-          + scm_ip_restriction                   = (known after apply)
-          + scm_type                             = (known after apply)
-          + scm_use_main_ip_restriction          = false
-          + vnet_route_all_enabled               = (known after apply)
-          + websockets_enabled                   = (known after apply)
-          + windows_fx_version                   = (known after apply)
-
-          + cors {
-              + allowed_origins     = (known after apply)
-              + support_credentials = (known after apply)
-            }
-        }
-
-      + source_control {
-          + branch             = (known after apply)
-          + manual_integration = (known after apply)
-          + repo_url           = (known after apply)
-          + rollback_enabled   = (known after apply)
-          + use_mercurial      = (known after apply)
-        }
-
-      + storage_account {
-          + access_key   = (sensitive value)
-          + account_name = (known after apply)
-          + mount_path   = (known after apply)
-          + name         = (known after apply)
-          + share_name   = (known after apply)
-          + type         = (known after apply)
-        }
-    }
-
-  # azurerm_app_service_plan.this will be created
-  + resource "azurerm_app_service_plan" "this" {
-      + id                           = (known after apply)
-      + kind                         = "Linux"
-      + location                     = "westeurope"
-      + maximum_elastic_worker_count = (known after apply)
-      + maximum_number_of_workers    = (known after apply)
-      + name                         = "asp-lab-we-webapp1"
-      + reserved                     = true
-      + resource_group_name          = "rg-lab-we-webapp1"
-
-      + sku {
-          + capacity = (known after apply)
-          + size     = "B1"
-          + tier     = "Basic"
-        }
-    }
 
   # azurerm_container_registry.this will be created
   + resource "azurerm_container_registry" "this" {
@@ -366,8 +199,7 @@ Terraform will perform the following actions:
       + admin_password                = (sensitive value)
       + admin_username                = (known after apply)
       + encryption                    = (known after apply)
-      + georeplication_locations      = (known after apply)
-      + georeplications               = (known after apply)
+      + export_policy_enabled         = true
       + id                            = (known after apply)
       + location                      = "westeurope"
       + login_server                  = (known after apply)
@@ -378,7 +210,6 @@ Terraform will perform the following actions:
       + resource_group_name           = "rg-lab-we-webapp1"
       + retention_policy              = (known after apply)
       + sku                           = "Basic"
-      + storage_account_id            = (known after apply)
       + trust_policy                  = (known after apply)
       + zone_redundancy_enabled       = false
     }
@@ -398,6 +229,121 @@ Terraform will perform the following actions:
       + status              = "enabled"
     }
 
+  # azurerm_linux_web_app.this will be created
+  + resource "azurerm_linux_web_app" "this" {
+      + app_settings                      = (known after apply)
+      + client_affinity_enabled           = false
+      + client_certificate_enabled        = false
+      + client_certificate_mode           = "Required"
+      + custom_domain_verification_id     = (sensitive value)
+      + default_hostname                  = (known after apply)
+      + enabled                           = true
+      + https_only                        = false
+      + id                                = (known after apply)
+      + key_vault_reference_identity_id   = (known after apply)
+      + kind                              = (known after apply)
+      + location                          = "westeurope"
+      + name                              = "wa-lab-we-webapp1"
+      + outbound_ip_address_list          = (known after apply)
+      + outbound_ip_addresses             = (known after apply)
+      + possible_outbound_ip_address_list = (known after apply)
+      + possible_outbound_ip_addresses    = (known after apply)
+      + resource_group_name               = "rg-lab-we-webapp1"
+      + service_plan_id                   = (known after apply)
+      + site_credential                   = (known after apply)
+      + zip_deploy_file                   = (known after apply)
+
+      + auth_settings {
+          + additional_login_parameters    = (known after apply)
+          + allowed_external_redirect_urls = (known after apply)
+          + default_provider               = (known after apply)
+          + enabled                        = (known after apply)
+          + issuer                         = (known after apply)
+          + runtime_version                = (known after apply)
+          + token_refresh_extension_hours  = (known after apply)
+          + token_store_enabled            = (known after apply)
+          + unauthenticated_client_action  = (known after apply)
+
+          + active_directory {
+              + allowed_audiences          = (known after apply)
+              + client_id                  = (known after apply)
+              + client_secret              = (sensitive value)
+              + client_secret_setting_name = (known after apply)
+            }
+
+          + facebook {
+              + app_id                  = (known after apply)
+              + app_secret              = (sensitive value)
+              + app_secret_setting_name = (known after apply)
+              + oauth_scopes            = (known after apply)
+            }
+
+          + github {
+              + client_id                  = (known after apply)
+              + client_secret              = (sensitive value)
+              + client_secret_setting_name = (known after apply)
+              + oauth_scopes               = (known after apply)
+            }
+
+          + google {
+              + client_id                  = (known after apply)
+              + client_secret              = (sensitive value)
+              + client_secret_setting_name = (known after apply)
+              + oauth_scopes               = (known after apply)
+            }
+
+          + microsoft {
+              + client_id                  = (known after apply)
+              + client_secret              = (sensitive value)
+              + client_secret_setting_name = (known after apply)
+              + oauth_scopes               = (known after apply)
+            }
+
+          + twitter {
+              + consumer_key                 = (known after apply)
+              + consumer_secret              = (sensitive value)
+              + consumer_secret_setting_name = (known after apply)
+            }
+        }
+
+      + identity {
+          + principal_id = (known after apply)
+          + tenant_id    = (known after apply)
+          + type         = "SystemAssigned"
+        }
+
+      + site_config {
+          + always_on                               = true
+          + container_registry_use_managed_identity = false
+          + default_documents                       = (known after apply)
+          + detailed_error_logging_enabled          = (known after apply)
+          + ftps_state                              = "Disabled"
+          + health_check_eviction_time_in_min       = (known after apply)
+          + http2_enabled                           = false
+          + ip_restriction                          = (known after apply)
+          + linux_fx_version                        = (known after apply)
+          + load_balancing_mode                     = "LeastRequests"
+          + local_mysql_enabled                     = false
+          + managed_pipeline_mode                   = "Integrated"
+          + minimum_tls_version                     = "1.2"
+          + remote_debugging_enabled                = false
+          + remote_debugging_version                = (known after apply)
+          + scm_ip_restriction                      = (known after apply)
+          + scm_minimum_tls_version                 = "1.2"
+          + scm_type                                = (known after apply)
+          + scm_use_main_ip_restriction             = false
+          + use_32_bit_worker                       = true
+          + vnet_route_all_enabled                  = false
+          + websockets_enabled                      = false
+          + worker_count                            = (known after apply)
+
+          + application_stack {
+              + docker_image     = (known after apply)
+              + docker_image_tag = "latest"
+            }
+        }
+    }
+
   # azurerm_resource_group.this will be created
   + resource "azurerm_resource_group" "this" {
       + id       = (known after apply)
@@ -405,7 +351,24 @@ Terraform will perform the following actions:
       + name     = "rg-lab-we-webapp1"
     }
 
+  # azurerm_service_plan.this will be created
+  + resource "azurerm_service_plan" "this" {
+      + id                           = (known after apply)
+      + kind                         = (known after apply)
+      + location                     = "westeurope"
+      + maximum_elastic_worker_count = (known after apply)
+      + name                         = "asp-lab-we-webapp1"
+      + os_type                      = "Linux"
+      + per_site_scaling_enabled     = false
+      + reserved                     = (known after apply)
+      + resource_group_name          = "rg-lab-we-webapp1"
+      + sku_name                     = "B1"
+      + worker_count                 = (known after apply)
+    }
+
 Plan: 5 to add, 0 to change, 0 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions if you run "terraform apply" now.
 ```
@@ -485,36 +448,25 @@ Make sure to change the name (before `.azurecr.io`) from `acrlabwewebapp1` to th
 You should see an output like this:
 
 ```shell
-Sending build context to Docker daemon  356.5MB
+Sending build context to Docker daemon  350.3MB
 Step 1/15 : FROM node:lts-buster-slim
-lts-buster-slim: Pulling from library/node
-15115158dd02: Pull complete
-0a3670bd8e93: Pull complete
-59583c507ad2: Pull complete
-c56d959776a3: Pull complete
-579e31ff2961: Pull complete
-Digest: sha256:3f34fa94510e16bf619fefb53c9c5d2b11ead626863bdb6b26b49d38d1b56db8
-Status: Downloaded newer image for node:lts-buster-slim
  ---> dc3b2ce4c6a8
 Step 2/15 : ARG NODE_ENV=production
- ---> Running in ee16ded385ec
-Removing intermediate container ee16ded385ec
+ ---> Using cache
  ---> abb014482642
 Step 3/15 : ENV NODE_ENV=$NODE_ENV
- ---> Running in 462259309fa8
-Removing intermediate container 462259309fa8
+ ---> Using cache
  ---> c731fdb82bf4
 Step 4/15 : WORKDIR /usr/src/app
- ---> Running in 3f2c0e00c226
-Removing intermediate container 3f2c0e00c226
+ ---> Using cache
  ---> a548971a1e0e
 Step 5/15 : COPY package*.json ./
- ---> bac957a73542
+ ---> 6068ac2bccd6
 Step 6/15 : RUN npm install
- ---> Running in a8968683bf84
-npm WARN deprecated core-js@2.6.12: core-js@<3.4 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
+ ---> Running in 56e5f268b4e1
+npm WARN deprecated core-js@2.6.12: core-js@<3.23.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Some versions have web compatibility issues. Please, upgrade your dependencies to the actual version of core-js.
 
-added 124 packages, and audited 125 packages in 7s
+added 124 packages, and audited 125 packages in 11s
 
 8 packages are looking for funding
   run `npm fund` for details
@@ -529,31 +481,31 @@ To address all issues, run:
 
 Run `npm audit` for details.
 npm notice
-npm notice New minor version of npm available! 8.3.1 -> 8.5.3
-npm notice Changelog: <https://github.com/npm/cli/releases/tag/v8.5.3>
-npm notice Run `npm install -g npm@8.5.3` to update!
+npm notice New minor version of npm available! 8.3.1 -> 8.19.2
+npm notice Changelog: <https://github.com/npm/cli/releases/tag/v8.19.2>
+npm notice Run `npm install -g npm@8.19.2` to update!
 npm notice
-Removing intermediate container a8968683bf84
- ---> 0a74d73c2c9b
+Removing intermediate container 56e5f268b4e1
+ ---> b4f7ed79a8ca
 Step 7/15 : COPY app.js ./
- ---> 23596abed405
+ ---> 11e76370d1d1
 Step 8/15 : COPY bin ./bin
- ---> 427421dae89c
+ ---> 74a88925b653
 Step 9/15 : COPY public ./public
- ---> d804da5899b5
+ ---> cf47166259d3
 Step 10/15 : COPY routes ./routes
- ---> f8f4db893e44
+ ---> 4a44bedb73b0
 Step 11/15 : COPY views ./views
- ---> 971dfaa76b5e
+ ---> 4e3b65b45c51
 Step 12/15 : RUN apt-get update && apt-get install -y   tini   && rm -rf /var/lib/apt/lists/*
- ---> Running in 4b7d09139d7d
-Get:1 http://security.debian.org/debian-security buster/updates InRelease [65.4 kB]
+ ---> Running in 3c9cc4d84ff1
+Get:1 http://security.debian.org/debian-security buster/updates InRelease [34.8 kB]
 Get:2 http://deb.debian.org/debian buster InRelease [122 kB]
-Get:3 http://deb.debian.org/debian buster-updates InRelease [51.9 kB]
-Get:4 http://security.debian.org/debian-security buster/updates/main amd64 Packages [317 kB]
-Get:5 http://deb.debian.org/debian buster/main amd64 Packages [7906 kB]
-Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [8792 B]
-Fetched 8471 kB in 1s (6278 kB/s)
+Get:3 http://deb.debian.org/debian buster-updates InRelease [56.6 kB]
+Get:4 http://security.debian.org/debian-security buster/updates/main amd64 Packages [368 kB]
+Get:5 http://deb.debian.org/debian buster/main amd64 Packages [7909 kB]
+Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [8788 B]
+Fetched 8499 kB in 4s (2146 kB/s)
 Reading package lists...
 Reading package lists...
 Building dependency tree...
@@ -563,32 +515,32 @@ The following package was automatically installed and is no longer required:
 Use 'apt autoremove' to remove it.
 The following NEW packages will be installed:
   tini
-0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+0 upgraded, 1 newly installed, 0 to remove and 12 not upgraded.
 Need to get 247 kB of archives.
 After this operation, 731 kB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian buster/main amd64 tini amd64 0.18.0-1 [247 kB]
 debconf: delaying package configuration, since apt-utils is not installed
-Fetched 247 kB in 0s (2928 kB/s)
+Fetched 247 kB in 0s (4026 kB/s)
 Selecting previously unselected package tini.
 (Reading database ... 6469 files and directories currently installed.)
 Preparing to unpack .../tini_0.18.0-1_amd64.deb ...
 Unpacking tini (0.18.0-1) ...
 Setting up tini (0.18.0-1) ...
-Removing intermediate container 4b7d09139d7d
- ---> 52b5198e8a56
+Removing intermediate container 3c9cc4d84ff1
+ ---> 7eb3c1ba1fcb
 Step 13/15 : USER node
- ---> Running in 51d5a7d33aea
-Removing intermediate container 51d5a7d33aea
- ---> e8568d478407
+ ---> Running in 7217a1e783a1
+Removing intermediate container 7217a1e783a1
+ ---> 896ec05fded2
 Step 14/15 : ENTRYPOINT ["/usr/bin/tini", "--"]
- ---> Running in 613467af7360
-Removing intermediate container 613467af7360
- ---> a0528d8cb771
+ ---> Running in da86f18f6f2d
+Removing intermediate container da86f18f6f2d
+ ---> 0e37fb5b5561
 Step 15/15 : CMD [ "node", "./bin/www" ]
- ---> Running in 8bf69b913e3d
-Removing intermediate container 8bf69b913e3d
- ---> be832b2edce0
-Successfully built be832b2edce0
+ ---> Running in 0526c96b177b
+Removing intermediate container 0526c96b177b
+ ---> 24a588a66068
+Successfully built 24a588a66068
 Successfully tagged acrlabwewebapp1.azurecr.io/azure-lab:latest
 ```
 
@@ -820,7 +772,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Prepare
         id: prep
         run: |
@@ -830,15 +782,15 @@ jobs:
           fi
           echo ::set-output name=VERSION::${VERSION}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ${{ secrets.ACR_HOSTNAME }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
       - name: Build and push container
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: true
           context: .
