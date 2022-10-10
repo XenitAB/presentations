@@ -4,11 +4,11 @@
 
 - [Internet](https://en.wikipedia.org/wiki/Internet)
 - [Azure Subscription](https://azure.microsoft.com/en-us/free/)
-- [Visual Studio Code](https://code.visualstudio.com/) _v1.63.2_
-  - [Azure App Service for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) _v0.23.1_
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) _v2.34.1_
-- [Node.js 16](https://nodejs.org/en/) _v16.14.0_
-- [npm](https://www.npmjs.com/get-npm) _v8.3.1_
+- [Visual Studio Code](https://code.visualstudio.com/) _v1.71.2_
+  - [Azure App Service for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) _v0.24.4_
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) _v2.40.0_
+- [Node.js 16](https://nodejs.org/en/) _v16.17.1_
+- [npm](https://www.npmjs.com/get-npm) _v8.19.2_
 
 ## Description
 
@@ -30,7 +30,7 @@ az account list -o table
 az account set --subscription "Visual Studio Enterprise" # Note that your subscription could have another name. You can use it's ID (UUID) instead as well.
 ```
 
-When writing this, I am using azure-cli version `2.34.1`.
+When writing this, I am using azure-cli version `2.40.0`.
 
 **NOTES**
 
@@ -147,12 +147,6 @@ Press `Review + create` and then `Create`.
 az webapp create --plan asp-lab-we-webapp1 --resource-group rg-lab-we-webapp1 --runtime "NODE|16-lts" --name wa-lab-we-webapp1
 ```
 
-> If you are running an older version of `azure-cli` (before v2.34.0), then you need to define `--runtime "NODE|14-lts"` in the above command and then, after it's created, run:
->
-> ```shell
-> az webapp config set --resource-group rg-lab-we-webapp1 --name wa-lab-we-webapp1 --linux-fx-version "NODE|16-lts"
-> ```
-
 **NOTES**
 
 - The name `wa-lab-we-webapp1` is required to be globally unique. Change `webapp1` to something else.
@@ -179,12 +173,12 @@ More info: [Create a Node.js web app in Azure](https://docs.microsoft.com/en-us/
 
 Make sure you have the following installed:
 
-- [Visual Studio Code](https://code.visualstudio.com/) _v1.63.2_
-  - [Azure App Service for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) _v0.23.1_
-- [Node.js 16](https://nodejs.org/en/) _v16.14.0_
-- [npm](https://www.npmjs.com/get-npm) _v8.3.1_
+- [Visual Studio Code](https://code.visualstudio.com/) _v1.71.2_
+  - [Azure App Service for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureappservice) _v0.24.4_
+- [Node.js 16](https://nodejs.org/en/) _v16.17.1_
+- [npm](https://www.npmjs.com/get-npm) _v8.19.2_
 
-As of writing this, I am using Node.js version `v16.14.0` and npm version `8.3.1`.
+As of writing this, I am using Node.js version `v16.17.1` and npm version `8.19.2`.
 
 In VS Code, go to the `Azure App Services` extension and login to your Azure Subscription. Make sure you see your App Service in the extension.
 

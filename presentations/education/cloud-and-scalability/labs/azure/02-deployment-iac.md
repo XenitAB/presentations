@@ -4,10 +4,10 @@
 
 - Same as in LAB #01 with the addition of:
 - [GitHub Account](https://github.com/join)
-- [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) _v1.1.7_
-- [git](https://git-scm.com/downloads) _v2.35.1_
+- [Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli) _v1.3.1_
+- [git](https://git-scm.com/downloads) _v2.37.3_
 
-In this lab, terraform version `1.1.7` is used.
+In this lab, terraform version `1.3.1` is used.
 
 ## Description
 
@@ -64,6 +64,8 @@ Create the scaffolding for node:
 ```shell
 npx express-generator . --view pug
 ```
+
+You may be asked `destination is not empty, continue? [y/N]?`, write `y` and press `ENTER`.
 
 Good to know: If you place your node code in a sub-directory, you need to configure a lot more to get it working out-of-the box. More info [here](https://github.com/projectkudu/kudu/wiki/Customizing-deployments).
 
@@ -168,7 +170,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "2.98.0"
+      version = "3.25.0"
     }
   }
 }
@@ -225,9 +227,9 @@ The folder structure in terraform should now look something like this:
 │       └── registry.terraform.io
 │           └── hashicorp
 │               └── azurerm
-│                   └── 2.98.0
+│                   └── 3.25.0
 │                       └── linux_amd64
-│                           └── terraform-provider-azurerm_v2.98.0_x5
+│                           └── terraform-provider-azurerm_v3.25.0_x5
 ├── .terraform.lock.hcl
 └── variables.tf
 ```
@@ -320,27 +322,24 @@ locals {
 Create an App Service Plan and an App Service:
 
 ```terraform
-resource "azurerm_app_service_plan" "this" {
+resource "azurerm_service_plan" "this" {
   name                = local.app_service_plan_name
-  location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
-  kind                = "Linux"
-  reserved            = true
-
-  sku {
-    tier = "Basic"
-    size = "B1"
-  }
+  location            = azurerm_resource_group.this.location
+  os_type             = "Linux"
+  sku_name            = "B1"
 }
 
-resource "azurerm_app_service" "this" {
+resource "azurerm_linux_web_app" "this" {
   name                = local.app_service_name
-  location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
-  app_service_plan_id = azurerm_app_service_plan.this.id
+  location            = azurerm_resource_group.this.location
+  service_plan_id     = azurerm_service_plan.this.id
 
   site_config {
-    linux_fx_version = "NODE|16-lts"
+    application_stack {
+      node_version = "16-lts"
+    }
   }
 }
 ```
@@ -368,20 +367,23 @@ It is possible to point the App Service to a GitHub repository using terraform. 
 If you want to try (I recommend you cancelling it if nothing happens in 10 minutes), you modify your `azurerm_app_service` to use the following:
 
 ```terraform
-resource "azurerm_app_service" "this" {
+resource "azurerm_linux_web_app" "this" {
   name                = local.app_service_name
-  location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
-  app_service_plan_id = azurerm_app_service_plan.this.id
+  location            = azurerm_resource_group.this.location
+  service_plan_id     = azurerm_service_plan.this.id
 
   site_config {
-    linux_fx_version = "NODE|16-lts"
+    application_stack {
+      node_version = "16-lts"
+    }
   }
+}
 
-  source_control {
-    repo_url           = "https://github.com/<org>/<repo>"
-    branch             = "<branch>"
-  }
+resource "azurerm_app_service_source_control" "this" {
+  app_id   = azurerm_linux_web_app.this.id
+  repo_url = "https://github.com/<org>/<repo>"
+  branch   = "main"
 }
 ```
 
@@ -392,14 +394,12 @@ Enable it using the Azure Portal:
 - Search for the App Service name (example: `wa-lab-we-webapp1`) in the top search bar
 - Press `Deployment Center`
 - Continuous Deployment (CI / CD) -> Select `GitHub`
-- You may have to authorize Azure Portal to access your GitHub at this stage
-- Press `Continue` at the bottom
-- Build provider -> Select `App Service build service`
-- Press `Continue` at the bottom
-- Configure Code -> Organization: `<org / username>`
-- Configure Code -> Repository: `<repo name>`
-- Configure Code -> Branch: `main`
-- Press `Continue` at the bottom -> Press `Finish`
+- Press `Change provider` and select `App Service Build Service`
+- Press `Authorize`
+- Organization: `<org / username>`
+- Repository: `<repo name>`
+- Branch: `main`
+- Press `Save`
 
 Enable it using Azure CLI:
 
@@ -437,7 +437,7 @@ git commit -m "update title"
 git push
 ```
 
-Verify that in `Deployment Center` that the change is picked up and when you browse the site you see `Welcome to AzureLab`.
+Verify that in `Deployment Center` that the change is picked up and when you browse the site you see `Welcome to AzureLab`. If, for some reason, nothing happens - please do another change and commit/push or press `Sync` when in `Deployment Center`.
 
 #### Cleaning up
 
@@ -452,122 +452,81 @@ This should show an output like this:
 
 ```shell
 azurerm_resource_group.this: Refreshing state... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1]
-azurerm_app_service_plan.this: Refreshing state... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1]
-azurerm_app_service.this: Refreshing state... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1]
+azurerm_service_plan.this: Refreshing state... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1]
+azurerm_linux_web_app.this: Refreshing state... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1]
 
-Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the
+following symbols:
   - destroy
 
 Terraform will perform the following actions:
 
-  # azurerm_app_service.this will be destroyed
-  - resource "azurerm_app_service" "this" {
-      - app_service_plan_id               = "/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
+  # azurerm_linux_web_app.this will be destroyed
+  - resource "azurerm_linux_web_app" "this" {
       - app_settings                      = {} -> null
       - client_affinity_enabled           = false -> null
-      - client_cert_enabled               = false -> null
-      - client_cert_mode                  = "Required" -> null
-      - custom_domain_verification_id     = "938A8148CC9107C5E73645A20FFC9F3EED3F46ADDDADDE4AF75CA009F4CBC22E" -> null
-      - default_site_hostname             = "wa-lab-we-webapp1.azurewebsites.net" -> null
+      - client_certificate_enabled        = false -> null
+      - client_certificate_mode           = "Required" -> null
+      - custom_domain_verification_id     = (sensitive value)
+      - default_hostname                  = "wa-lab-we-webapp1.azurewebsites.net" -> null
       - enabled                           = true -> null
       - https_only                        = false -> null
       - id                                = "/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1" -> null
       - key_vault_reference_identity_id   = "SystemAssigned" -> null
+      - kind                              = "app,linux" -> null
       - location                          = "westeurope" -> null
       - name                              = "wa-lab-we-webapp1" -> null
-      - outbound_ip_address_list          = [
-          - "<truncated>"
-        ] -> null
-      - outbound_ip_addresses             = "<truncated>" -> null
-      - possible_outbound_ip_address_list = [
-          - "<truncated>"
-        ] -> null
-      - possible_outbound_ip_addresses    = "<truncated>" -> null
+      - outbound_ip_address_list          = [truncated] -> null
+      - outbound_ip_addresses             = "truncated" -> null
+      - possible_outbound_ip_address_list = [truncated] -> null
+      - possible_outbound_ip_addresses    = "truncated" -> null
       - resource_group_name               = "rg-lab-we-webapp1" -> null
+      - service_plan_id                   = "/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
       - site_credential                   = [
           - {
+              - name     = "$wa-lab-we-webapp1"
               - password = "***"
-              - username = "$wa-lab-we-webapp1"
             },
         ] -> null
       - tags                              = {} -> null
 
       - auth_settings {
-          - additional_login_params        = {} -> null
+          - additional_login_parameters    = {} -> null
           - allowed_external_redirect_urls = [] -> null
           - enabled                        = false -> null
           - token_refresh_extension_hours  = 0 -> null
           - token_store_enabled            = false -> null
         }
 
-      - logs {
-          - detailed_error_messages_enabled = false -> null
-          - failed_request_tracing_enabled  = false -> null
-
-          - application_logs {
-              - file_system_level = "Off" -> null
-            }
-
-          - http_logs {
-            }
-        }
-
       - site_config {
-          - acr_use_managed_identity_credentials = false -> null
-          - always_on                            = false -> null
-          - default_documents                    = [] -> null
-          - dotnet_framework_version             = "v4.0" -> null
-          - ftps_state                           = "AllAllowed" -> null
-          - http2_enabled                        = false -> null
-          - ip_restriction                       = [] -> null
-          - linux_fx_version                     = "NODE|16-lts" -> null
-          - local_mysql_enabled                  = false -> null
-          - managed_pipeline_mode                = "Integrated" -> null
-          - min_tls_version                      = "1.2" -> null
-          - number_of_workers                    = 1 -> null
-          - remote_debugging_enabled             = false -> null
-          - remote_debugging_version             = "VS2019" -> null
-          - scm_ip_restriction                   = [] -> null
-          - scm_type                             = "GitHub" -> null
-          - scm_use_main_ip_restriction          = false -> null
-          - use_32_bit_worker_process            = false -> null
-          - vnet_route_all_enabled               = false -> null
-          - websockets_enabled                   = false -> null
+          - always_on                               = true -> null
+          - auto_heal_enabled                       = false -> null
+          - container_registry_use_managed_identity = false -> null
+          - default_documents                       = [truncated] -> null
+          - detailed_error_logging_enabled          = false -> null
+          - ftps_state                              = "Disabled" -> null
+          - health_check_eviction_time_in_min       = 0 -> null
+          - http2_enabled                           = false -> null
+          - ip_restriction                          = [] -> null
+          - linux_fx_version                        = "NODE|16-lts" -> null
+          - load_balancing_mode                     = "LeastRequests" -> null
+          - local_mysql_enabled                     = false -> null
+          - managed_pipeline_mode                   = "Integrated" -> null
+          - minimum_tls_version                     = "1.2" -> null
+          - remote_debugging_enabled                = false -> null
+          - remote_debugging_version                = "VS2019" -> null
+          - scm_ip_restriction                      = [] -> null
+          - scm_minimum_tls_version                 = "1.2" -> null
+          - scm_type                                = "None" -> null
+          - scm_use_main_ip_restriction             = false -> null
+          - use_32_bit_worker                       = true -> null
+          - vnet_route_all_enabled                  = false -> null
+          - websockets_enabled                      = false -> null
+          - worker_count                            = 1 -> null
 
-          - cors {
-              - allowed_origins     = [] -> null
-              - support_credentials = false -> null
+          - application_stack {
+              - node_version = "16-lts" -> null
             }
-        }
-
-      - source_control {
-          - branch             = "main" -> null
-          - manual_integration = false -> null
-          - repo_url           = "https://github.com/<org>/<repo>" -> null
-          - rollback_enabled   = false -> null
-          - use_mercurial      = false -> null
-        }
-    }
-
-  # azurerm_app_service_plan.this will be destroyed
-  - resource "azurerm_app_service_plan" "this" {
-      - id                           = "/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
-      - is_xenon                     = false -> null
-      - kind                         = "linux" -> null
-      - location                     = "westeurope" -> null
-      - maximum_elastic_worker_count = 1 -> null
-      - maximum_number_of_workers    = 3 -> null
-      - name                         = "asp-lab-we-webapp1" -> null
-      - per_site_scaling             = false -> null
-      - reserved                     = true -> null
-      - resource_group_name          = "rg-lab-we-webapp1" -> null
-      - tags                         = {} -> null
-      - zone_redundant               = false -> null
-
-      - sku {
-          - capacity = 1 -> null
-          - size     = "B1" -> null
-          - tier     = "Basic" -> null
         }
     }
 
@@ -579,6 +538,23 @@ Terraform will perform the following actions:
       - tags     = {} -> null
     }
 
+  # azurerm_service_plan.this will be destroyed
+  - resource "azurerm_service_plan" "this" {
+      - id                           = "/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1" -> null
+      - kind                         = "linux" -> null
+      - location                     = "westeurope" -> null
+      - maximum_elastic_worker_count = 1 -> null
+      - name                         = "asp-lab-we-webapp1" -> null
+      - os_type                      = "Linux" -> null
+      - per_site_scaling_enabled     = false -> null
+      - reserved                     = true -> null
+      - resource_group_name          = "rg-lab-we-webapp1" -> null
+      - sku_name                     = "B1" -> null
+      - tags                         = {} -> null
+      - worker_count                 = 1 -> null
+      - zone_balancing_enabled       = false -> null
+    }
+
 Plan: 0 to add, 0 to change, 3 to destroy.
 
 Do you really want to destroy all resources?
@@ -587,13 +563,14 @@ Do you really want to destroy all resources?
 
   Enter a value: yes
 
-azurerm_app_service.this: Destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1]
-azurerm_app_service.this: Destruction complete after 9s
-azurerm_app_service_plan.this: Destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1]
-azurerm_app_service_plan.this: Destruction complete after 7s
+azurerm_linux_web_app.this: Destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/sites/wa-lab-we-webapp1]
+azurerm_linux_web_app.this: Still destroying... [id=/subscriptions/<subscription_id>/Microsoft.Web/sites/wa-lab-we-webapp1, 10s elapsed]
+azurerm_linux_web_app.this: Destruction complete after 15s
+azurerm_service_plan.this: Destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1/providers/Microsoft.Web/serverfarms/asp-lab-we-webapp1]
+azurerm_service_plan.this: Destruction complete after 9s
 azurerm_resource_group.this: Destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1]
 azurerm_resource_group.this: Still destroying... [id=/subscriptions/<subscription_id>/resourceGroups/rg-lab-we-webapp1, 10s elapsed]
-azurerm_resource_group.this: Destruction complete after 16s
+azurerm_resource_group.this: Destruction complete after 1m19s
 
 Destroy complete! Resources: 3 destroyed.
 ```
