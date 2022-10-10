@@ -394,14 +394,12 @@ Enable it using the Azure Portal:
 - Search for the App Service name (example: `wa-lab-we-webapp1`) in the top search bar
 - Press `Deployment Center`
 - Continuous Deployment (CI / CD) -> Select `GitHub`
-- You may have to authorize Azure Portal to access your GitHub at this stage
-- Press `Continue` at the bottom
-- Build provider -> Select `App Service build service`
-- Press `Continue` at the bottom
-- Configure Code -> Organization: `<org / username>`
-- Configure Code -> Repository: `<repo name>`
-- Configure Code -> Branch: `main`
-- Press `Continue` at the bottom -> Press `Finish`
+- Press `Change provider` and select `App Service Build Service`
+- Press `Authorize`
+- Organization: `<org / username>`
+- Repository: `<repo name>`
+- Branch: `main`
+- Press `Save`
 
 Enable it using Azure CLI:
 
@@ -439,7 +437,7 @@ git commit -m "update title"
 git push
 ```
 
-Verify that in `Deployment Center` that the change is picked up and when you browse the site you see `Welcome to AzureLab`.
+Verify that in `Deployment Center` that the change is picked up and when you browse the site you see `Welcome to AzureLab`. If, for some reason, nothing happens - please do another change and commit/push or press `Sync` when in `Deployment Center`.
 
 #### Cleaning up
 
