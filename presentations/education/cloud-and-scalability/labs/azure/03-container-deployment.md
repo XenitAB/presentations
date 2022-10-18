@@ -167,7 +167,7 @@ resource "azurerm_container_registry_webhook" "this" {
 }
 ```
 
-There's a lot of new things in here, but one completely new thing is [the lifecycle Meta-Argument](the lifecycle Meta-Argument) which tells terraform to ignore changes to a specific property. This is actually not needed in this case because we will use a webhook to tell the Web App to reload a specific container tag (`latest`) but if we were pushing new versions from outside of terraform - we would use this to make sure that terraform doesn't overwrite the new version with what is defined in the configuration.
+There's a lot of new things in here, but one completely new thing is [the lifecycle Meta-Argument](https://www.terraform.io/language/meta-arguments/lifecycle) which tells terraform to ignore changes to a specific property. This is actually not needed in this case because we will use a webhook to tell the Web App to reload a specific container tag (`latest`) but if we were pushing new versions from outside of terraform - we would use this to make sure that terraform doesn't overwrite the new version with what is defined in the configuration.
 
 **RUNNING TERRAFORM**
 
