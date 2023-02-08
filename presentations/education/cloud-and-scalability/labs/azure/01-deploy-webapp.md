@@ -97,7 +97,7 @@ Press `+ Create` in the left corner and then:
 - App Service Plan details > Name: `asp-lab-we-webapp1`
 - App Service Plan details > Operating System: \[v\] `Linux`
 - App Service Plan details > Region: `West Europe`
-- Pricing Tier > Sku and size: `Dev / Test` > `B1`
+- Pricing Tier > Pricing plan: Basic B1
 
 Press `Review + create` and then `Create`.
 

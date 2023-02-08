@@ -407,7 +407,7 @@ We now need to get started with the next step and that is to create a container 
 Create a file named `Dockerfile`:
 
 ```Dockerfile
-FROM node:lts-buster-slim
+FROM node:16-buster-slim
 
 ARG NODE_ENV=production
 ENV NODE_ENV=$NODE_ENV
@@ -780,7 +780,7 @@ jobs:
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF/refs\/tags\//}
           fi
-          echo ::set-output name=VERSION::${VERSION}
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to GitHub Container Registry
@@ -790,7 +790,7 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
       - name: Build and push container
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           context: .

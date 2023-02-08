@@ -309,7 +309,7 @@ Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
 
 **TERRAFORM**
 
-Update your `locals {}` to reflect the new names:
+Update your `locals {}` in `main.tf` to reflect the new names:
 
 ```terraform
 locals {
@@ -361,33 +361,6 @@ git push
 ```
 
 **CONTINUOUS DEPLOYMENT**
-
-It is possible to point the App Service to a GitHub repository using terraform. I've had a lot of issues with the App Service completing the configuration gracefully when doing it and to save time during the lab I've chosen to enable it using the portal or Azure CLI.
-
-If you want to try (I recommend you cancelling it if nothing happens in 10 minutes), you modify your `azurerm_app_service` to use the following:
-
-```terraform
-resource "azurerm_linux_web_app" "this" {
-  name                = local.app_service_name
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  service_plan_id     = azurerm_service_plan.this.id
-
-  site_config {
-    application_stack {
-      node_version = "16-lts"
-    }
-  }
-}
-
-resource "azurerm_app_service_source_control" "this" {
-  app_id   = azurerm_linux_web_app.this.id
-  repo_url = "https://github.com/<org>/<repo>"
-  branch   = "main"
-}
-```
-
-_Please observe! You can't run the above right away, you first need to add a GitHub token to Azure. This would be possible using terraform and the [`azurerm_app_service_source_control_token`](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/app_service_source_control_token) resource. But since we want to keep this guide as short as possible, we'll do it using the CLI. See the command below (`update-token`)._
 
 Enable it using the Azure Portal:
 
